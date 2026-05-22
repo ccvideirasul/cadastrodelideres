@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro de GC — CCVideira Sul</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0d0d0d;
+    --gray-900: #1a1a1a;
+    --gray-800: #2c2c2c;
+    --gray-700: #444444;
+    --gray-600: #5f5f5f;
+    --gray-500: #7a7a7a;
+    --gray-400: #9e9e9e;
+    --gray-300: #c4c4c4;
+    --gray-200: #e2e2e2;
+    --gray-100: #f2f2f2;
+    --gray-50: #f8f8f8;
+    --white: #ffffff;
+    --danger: #c0392b;
+    --danger-light: #fdf0ee;
+    --accent: #1a1a1a;
+    --border: #d4d4d4;
+    --border-focus: #0d0d0d;
+    --radius: 8px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.09);
+  }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: #ebebeb;
+    color: var(--gray-900);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  header {
+    background: var(--black);
+    padding: 28px 0 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: none;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 20px;
+    background: #ebebeb;
+    clip-path: ellipse(52% 100% at 50% 100%);
+  }
+  .header-inner { max-width: 660px; margin: 0 auto; padding: 0 24px; position: relative; }
+  .logo-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 100px;
+    padding: 5px 16px;
+    margin-bottom: 14px;
+  }
+  .logo-badge span { color: rgba(255,255,255,0.75); font-size: 11px; letter-spacing: 0.10em; font-weight: 500; text-transform: uppercase; }
+  header h1 { color: #fff; font-size: 24px; font-weight: 600; letter-spacing: -0.4px; line-height: 1.2; }
+  header p { color: rgba(255,255,255,0.55); font-size: 13px; margin-top: 7px; font-weight: 300; }
+
+  .container { max-width: 660px; margin: 0 auto; padding: 28px 16px 0; }
+
+  .progress-bar { background: #d8d8d8; border-radius: 100px; height: 4px; margin-bottom: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--black); border-radius: 100px; transition: width 0.4s ease; }
+  .progress-label { font-size: 11px; color: var(--gray-500); text-align: right; margin-bottom: 22px; font-family: 'DM Mono', monospace; }
+
+  .card {
+    background: var(--white);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 26px 26px 22px;
+    margin-bottom: 14px;
+    border: 1px solid var(--gray-200);
+  }
+  .card-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; font-weight: 600; color: var(--black);
+    margin-bottom: 20px; padding-bottom: 14px;
+    border-bottom: 1.5px solid var(--gray-200);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .card-title .icon {
+    width: 28px; height: 28px;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  label {
+    display: block;
+    font-size: 12px; font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  label .req { color: var(--danger); margin-left: 2px; }
+  label .hint { color: var(--gray-400); font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 12px; margin-left: 4px; }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  select,
+  textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 13px;
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    color: var(--gray-900);
+    background: var(--white);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    appearance: none;
+    outline: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--black);
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.07);
+  }
+  input.error, select.error, textarea.error {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(192,57,43,0.10);
+  }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7a7a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 13px center; padding-right: 36px;
+  }
+  textarea { resize: vertical; min-height: 76px; }
+
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  .error-msg {
+    display: none; color: var(--danger);
+    font-size: 11px; margin-top: 5px;
+    font-weight: 500;
+  }
+
+  /* Info box */
+  .info-box {
+    background: var(--gray-50);
+    border-left: 3px solid var(--gray-800);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 11px 14px;
+    font-size: 12.5px;
+    color: var(--gray-600);
+    margin-bottom: 18px;
+    line-height: 1.55;
+  }
+
+  /* Membros */
+  .member-list { display: flex; flex-direction: column; gap: 10px; }
+  .member-item {
+    background: var(--gray-50);
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .member-item-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .member-number {
+    font-size: 11px; font-weight: 600;
+    color: var(--gray-700);
+    background: var(--gray-200);
+    border-radius: 5px;
+    padding: 3px 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .btn-remove {
+    background: none; border: none; cursor: pointer;
+    color: var(--gray-400); font-size: 18px; line-height: 1;
+    padding: 2px 6px; border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .btn-remove:hover { color: var(--danger); background: var(--danger-light); }
+
+  /* Legenda dos próximos passos */
+  .passos-legend {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .passo-leg {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--gray-600);
+    line-height: 1.45;
+  }
+  .passo-num {
+    flex-shrink: 0;
+    width: 18px; height: 18px;
+    background: var(--gray-800);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace;
+    position: relative;
+    top: 1px;
+  }
+
+  /* Tooltip do próximo passo */
+  .passo-tooltip {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-top: 5px;
+    line-height: 1.5;
+    min-height: 16px;
+    font-style: italic;
+    display: none;
+  }
+  .passo-tooltip.visible { display: block; }
+
+  .btn-add-member {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%;
+    background: var(--gray-50);
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius);
+    padding: 11px 16px;
+    color: var(--gray-700);
+    font-family: 'Sora', sans-serif;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    margin-top: 4px;
+  }
+  .btn-add-member:hover { background: var(--gray-100); border-color: var(--gray-500); }
+  .btn-add-member .plus { font-size: 18px; line-height: 1; color: var(--gray-700); font-weight: 300; }
+
+  .member-count-badge {
+    display: inline-flex; align-items: center;
+    background: var(--gray-200);
+    color: var(--gray-700);
+    border-radius: 100px;
+    font-size: 11px; font-weight: 600;
+    padding: 2px 10px;
+    font-family: 'DM Mono', monospace;
+    margin-left: 8px;
+  }
+
+  /* Líderes dinâmicos */
+  #liderFields { transition: all 0.2s; }
+
+  /* Aviso de duplicata de contato */
+  .warn-box {
+    display: none;
+    background: #fff8e1;
+    border: 1.5px solid #f0c030;
+    border-radius: var(--radius);
+    padding: 9px 13px;
+    font-size: 12px;
+    color: #7a5c00;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+  .warn-box.visible { display: block; }
+
+  /* Footer buttons */
+  .footer-actions { display: flex; gap: 12px; margin-top: 8px; }
+  .btn-primary {
+    flex: 1;
+    background: var(--black);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 13px 24px;
+    font-family: 'Sora', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    letter-spacing: -0.1px;
+  }
+  .btn-primary:hover { background: var(--gray-800); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-secondary {
+    background: var(--white);
+    color: var(--gray-600);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 13px 20px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .btn-secondary:hover { border-color: var(--gray-700); color: var(--gray-900); }
+
+  /* Sucesso */
+  .success-screen { display: none; text-align: center; padding: 48px 24px; }
+  .success-icon {
+    width: 68px; height: 68px;
+    background: var(--gray-100);
+    border: 2px solid var(--gray-300);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; margin: 0 auto 20px;
+  }
+  .success-screen h2 { font-size: 20px; font-weight: 600; color: var(--black); margin-bottom: 8px; }
+  .success-screen p { color: var(--gray-500); font-size: 13px; line-height: 1.6; }
+  .download-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 22px;
+    background: var(--black);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 12px 26px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .download-btn:hover { background: var(--gray-800); }
+
+  /* Divider label */
+  .section-divider {
+    font-size: 11px; font-weight: 600; color: var(--gray-400);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin: 16px 0 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--gray-200); }
+
+  @media (max-width: 520px) {
+    .row-2, .row-3 { grid-template-columns: 1fr; }
+    .card { padding: 18px 16px; }
+    header h1 { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-badge">
+      <span>CCVideira Sul — Migração para InPeace</span>
+    </div>
+    <h1>Cadastro do seu Grupo de Crescimento</h1>
+    <p>Preencha os dados do GC e liste os membros para concluir a migração</p>
+  </div>
+</header>
+
+<div class="container">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="progress-label" id="progressLabel">0 de 3 seções preenchidas</div>
+
+  <form id="gcForm" novalidate>
+
+    <!-- ═══════════════════════════════════════════
+         SEÇÃO 1: DADOS DO GRUPO
+    ═══════════════════════════════════════════ -->
+    <div class="card" id="sec1">
+      <div class="card-title"><div class="icon">📋</div> Dados do Grupo</div>
+
+      <div class="field">
+        <label>Nome do grupo <span class="req">*</span></label>
+        <input type="text" id="nomeGrupo" placeholder="Ex: Somos Um — Aldeota Quinta-feira" required>
+        <div class="error-msg" id="err-nomeGrupo">Por favor, informe o nome do grupo.</div>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label>Ministério <span class="req">*</span></label>
+          <select id="ministerio" required onchange="onMinisterioChange()">
+            <option value="">Selecione...</option>
+            <option>A13 Jr — 12 a 14 anos</option>
+            <option>A13 School — 15 a 17 anos</option>
+            <option>A13 Uni — 18 a 24 anos</option>
+            <option>Vert — 25 a 34 anos</option>
+            <option>Inspire — 35+</option>
+            <option value="Somos Um (Casais)">Somos Um (Casais)</option>
+            <option>Somos Um (Rede MC)</option>
+            <option>Somos Um (Rede HC)</option>
+            <option>Videira Kids — 8 a 11 anos</option>
+          </select>
+          <div class="error-msg" id="err-ministerio">Selecione um ministério.</div>
+        </div>
+        <div class="field">
+          <label>Dia da semana <span class="req">*</span></label>
+          <select id="diaSemana" required>
+            <option value="">Selecione...</option>
+            <option>Segunda-feira</option>
+            <option>Terça-feira</option>
+            <option>Quinta-feira</option>
+            <option>Sexta-feira</option>
+            <option>Sábado</option>
+          </select>
+          <div class="error-msg" id="err-diaSemana">Informe o dia da semana.</div>
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label>Horário de início <span class="req">*</span></label>
+          <input type="text" id="horario" placeholder="Ex: 19:30" required>
+          <div class="error-msg" id="err-horario">Informe o horário.</div>
+        </div>
+        <div class="field">
+          <label>Bairro / Localidade <span class="req">*</span></label>
+          <input type="text" id="bairro" placeholder="Ex: Aldeota" required>
+          <div class="error-msg" id="err-bairro">Informe o bairro.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Observações do grupo <span class="hint">(opcional)</span></label>
+        <textarea id="obsGrupo" placeholder="Informações adicionais sobre o GC..."></textarea>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SEÇÃO 2: DADOS DO LÍDER
+    ═══════════════════════════════════════════ -->
+    <div class="card" id="sec2">
+      <div class="card-title"><div class="icon">👤</div> Dados do Líder</div>
+
+      <!-- Líder principal (sempre visível) -->
+      <div id="liderFields">
+        <div class="section-divider" id="lider1Label">Líder 1</div>
+        <div class="row-2">
+          <div class="field">
+            <label>Nome completo <span class="req">*</span></label>
+            <input type="text" id="liderNome" placeholder="Nome do líder" required>
+            <div class="error-msg" id="err-liderNome">Informe o nome do líder.</div>
+          </div>
+          <div class="field">
+            <label>WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="liderWhats" placeholder="(85) 99999-9999" required oninput="validarContatosMembros()">
+            <div class="error-msg" id="err-liderWhats">Informe o WhatsApp do líder.</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>E-mail <span class="hint">(opcional)</span></label>
+          <input type="email" id="liderEmail" placeholder="email@exemplo.com" oninput="validarContatosMembros()">
+        </div>
+
+        <!-- Líder 2 — aparece se Somos Um -->
+        <div id="lider2Block" style="display:none">
+          <div class="section-divider">Líder 2</div>
+          <div class="row-2">
+            <div class="field">
+              <label>Nome completo <span class="req">*</span></label>
+              <input type="text" id="lider2Nome" placeholder="Nome do líder 2">
+              <div class="error-msg" id="err-lider2Nome">Informe o nome do líder 2.</div>
+            </div>
+            <div class="field">
+              <label>WhatsApp <span class="req">*</span></label>
+              <input type="tel" id="lider2Whats" placeholder="(85) 99999-9999" oninput="validarContatosMembros()">
+              <div class="error-msg" id="err-lider2Whats">Informe o WhatsApp do líder 2.</div>
+            </div>
+          </div>
+          <div class="field">
+            <label>E-mail <span class="hint">(opcional)</span></label>
+            <input type="email" id="lider2Email" placeholder="email@exemplo.com" oninput="validarContatosMembros()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Co-líder -->
+      <div class="field" style="margin-top:16px">
+        <label>Tem co-líder? <span class="req">*</span></label>
+        <select id="temColider" required onchange="toggleColider(this.value)">
+          <option value="">Selecione...</option>
+          <option value="nao">Não</option>
+          <option value="sim">Sim</option>
+        </select>
+        <div class="error-msg" id="err-temColider">Selecione uma opção.</div>
+      </div>
+
+      <div id="coliderFields" style="display:none">
+        <div class="section-divider">Co-líder 1</div>
+        <div class="row-2">
+          <div class="field">
+            <label>Nome do co-líder 1</label>
+            <input type="text" id="coliderNome" placeholder="Nome do co-líder 1">
+          </div>
+          <div class="field">
+            <label>WhatsApp do co-líder 1</label>
+            <input type="tel" id="coliderWhats" placeholder="(85) 99999-9999" oninput="validarContatosMembros()">
+          </div>
+        </div>
+        <div class="section-divider">Co-líder 2</div>
+        <div class="row-2">
+          <div class="field">
+            <label>Nome do co-líder 2 <span class="hint">(se houver)</span></label>
+            <input type="text" id="colider2Nome" placeholder="Nome do co-líder 2">
+          </div>
+          <div class="field">
+            <label>WhatsApp do co-líder 2</label>
+            <input type="tel" id="colider2Whats" placeholder="(85) 99999-9999" oninput="validarContatosMembros()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Supervisores Pastorais -->
+      <div class="field" style="margin-top:16px">
+        <label>Supervisores Pastorais responsáveis <span class="req">*</span></label>
+        <input type="text" id="supervisor" placeholder="Nome(s) do(s) supervisor(es) ou coordenador(es)" required>
+        <div class="error-msg" id="err-supervisor">Informe o supervisor pastoral responsável.</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SEÇÃO 3: MEMBROS
+    ═══════════════════════════════════════════ -->
+    <div class="card" id="sec3">
+      <div class="card-title">
+        <div class="icon">👥</div>
+        Membros do GC
+        <span class="member-count-badge" id="memberCountBadge">0 membros</span>
+      </div>
+
+      <div class="info-box">
+        Adicione todos os membros do grupo. O líder <strong>não</strong> precisa ser listado aqui novamente. O sistema avisará se um WhatsApp ou e-mail já cadastrado no líder for usado em um membro.
+      </div>
+
+      <div class="member-list" id="memberList"></div>
+
+      <button type="button" class="btn-add-member" onclick="addMember()">
+        <span class="plus">+</span> Adicionar membro
+      </button>
+    </div>
+
+    <div class="footer-actions">
+      <button type="button" class="btn-secondary" onclick="clearForm()">Limpar</button>
+      <button type="submit" class="btn-primary" id="submitBtn">✓ Enviar cadastro</button>
+    </div>
+  </form>
+
+  <!-- Tela de sucesso -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✓</div>
+    <h2>GC cadastrado com sucesso!</h2>
+    <p>Os dados foram enviados para a planilha com sucesso!</p>
+    <br><br>
+    <button class="btn-secondary" onclick="novoGC()" style="margin-top:8px">+ Cadastrar outro GC</button>
+  </div>
+</div>
+
+<script>
+var memberCount = 0;
+
+var PASSOS_DESC = {
+  '': '',
+  '1 — DECIDIR':  'Conhecendo a igreja, mas ainda não aceitou a Jesus como Senhor e Salvador.',
+  '2 — CONECTAR': 'Novo decidido, mas ainda não é membro de um GC.',
+  '3 — CONHECER': 'Membro do GC, mas ainda não iniciou a trilha Fundamentos.',
+  '4 — SERVIR':   'Faz parte da igreja, mas ainda não é voluntário.',
+  '5 — LIDERAR':  'Fez Fundamentos, é voluntário e está em GC, mas ainda não fez o PFL.'
+};
+
+var isSomosUm = false;
+
+function onMinisterioChange() {
+  var val = document.getElementById('ministerio').value;
+  isSomosUm = val === 'Somos Um (Casais)';
+  document.getElementById('lider2Block').style.display = isSomosUm ? 'block' : 'none';
+  document.getElementById('lider1Label').textContent = isSomosUm ? 'Líder 1' : 'Líder';
+
+  // Tornar campos do líder 2 required/not-required dinamicamente
+  var l2n = document.getElementById('lider2Nome');
+  var l2w = document.getElementById('lider2Whats');
+  if (isSomosUm) {
+    l2n.setAttribute('required', '');
+    l2w.setAttribute('required', '');
+  } else {
+    l2n.removeAttribute('required');
+    l2w.removeAttribute('required');
+  }
+  updateProgress();
+}
+
+function toggleColider(val) {
+  document.getElementById('coliderFields').style.display = val === 'sim' ? 'block' : 'none';
+}
+
+// ── Contatos do líder para validação duplicata ──────────────────
+function getContatosLider() {
+  var set = new Set();
+  ['liderWhats','liderEmail','lider2Whats','lider2Email','coliderWhats','colider2Whats'].forEach(function(id) {
+    var el = document.getElementById(id);
+    var v = el ? el.value.trim().toLowerCase().replace(/\s/g,'') : '';
+    if (v) set.add(v);
+  });
+  return set;
+}
+
+function validarContatosMembros() {
+  var contatos = getContatosLider();
+  document.querySelectorAll('.member-item').forEach(function(item) {
+    var wInput = item.querySelector('.m-whats');
+    var eInput = item.querySelector('.m-email');
+    var warn   = item.querySelector('.warn-dup');
+    var flagged = false;
+    if (wInput) {
+      var wv = wInput.value.trim().toLowerCase().replace(/\s/g,'');
+      if (wv && contatos.has(wv)) flagged = true;
+    }
+    if (eInput) {
+      var ev = eInput.value.trim().toLowerCase();
+      if (ev && contatos.has(ev)) flagged = true;
+    }
+    if (warn) {
+      warn.classList.toggle('visible', flagged);
+    }
+  });
+}
+
+// ── Adicionar membro ────────────────────────────────────────────
+function addMember() {
+  memberCount++;
+  var list = document.getElementById('memberList');
+  var div = document.createElement('div');
+  div.className = 'member-item';
+  div.id = 'member-' + memberCount;
+  var idx = memberCount;
+  div.innerHTML =
+    '<div class="member-item-header">' +
+      '<span class="member-number">Membro #' + idx + '</span>' +
+      '<button type="button" class="btn-remove" onclick="removeMember(' + idx + ')" title="Remover">×</button>' +
+    '</div>' +
+    '<div class="row-2">' +
+      '<div class="field">' +
+        '<label>Nome completo <span class="req">*</span></label>' +
+        '<input type="text" class="m-nome" placeholder="Nome completo">' +
+      '</div>' +
+      '<div class="field">' +
+        '<label>WhatsApp</label>' +
+        '<input type="tel" class="m-whats" placeholder="(85) 99999-9999" oninput="validarContatosMembros()">' +
+      '</div>' +
+    '</div>' +
+    '<div class="field">' +
+      '<label>E-mail <span class="hint">(opcional)</span></label>' +
+      '<input type="email" class="m-email" placeholder="email@exemplo.com" oninput="validarContatosMembros()">' +
+    '</div>' +
+    '<div class="warn-box warn-dup">⚠ Este WhatsApp ou e-mail já está cadastrado como líder. Verifique se não é um cadastro duplicado.</div>' +
+    '<div class="field">' +
+      '<label>Próximo passo</label>' +
+      '<div class="passos-legend">' +
+        '<div class="passo-leg"><span class="passo-num">1</span><span><strong>DECIDIR</strong> — Conhecendo a igreja, mas ainda não aceitou a Jesus como Senhor e Salvador.</span></div>' +
+        '<div class="passo-leg"><span class="passo-num">2</span><span><strong>CONECTAR</strong> — Novo decidido, mas ainda não é membro de um GC.</span></div>' +
+        '<div class="passo-leg"><span class="passo-num">3</span><span><strong>CONHECER</strong> — Membro do GC, mas ainda não iniciou a trilha Fundamentos.</span></div>' +
+        '<div class="passo-leg"><span class="passo-num">4</span><span><strong>SERVIR</strong> — Faz parte da igreja, mas ainda não é voluntário.</span></div>' +
+        '<div class="passo-leg"><span class="passo-num">5</span><span><strong>LIDERAR</strong> — Fez Fundamentos, é voluntário e está em GC, mas ainda não fez o PFL.</span></div>' +
+      '</div>' +
+      '<select class="m-passo" onchange="updatePassoDesc(this)">' +
+        '<option value="">Não informado</option>' +
+        '<option>1 — DECIDIR</option>' +
+        '<option>2 — CONECTAR</option>' +
+        '<option>3 — CONHECER</option>' +
+        '<option>4 — SERVIR</option>' +
+        '<option>5 — LIDERAR</option>' +
+      '</select>' +
+    '</div>';
+  list.appendChild(div);
+  updateMemberCount();
+  updateProgress();
+}
+
+function updatePassoDesc(sel) {
+  var item = sel.closest('.member-item');
+  if (!item) return;
+  var tip = item.querySelector('.passo-tooltip');
+  if (!tip) return;
+  var desc = PASSOS_DESC[sel.value] || '';
+  tip.textContent = desc;
+  tip.classList.toggle('visible', !!desc);
+}
+
+function removeMember(id) {
+  var el = document.getElementById('member-' + id);
+  if (el) el.remove();
+  updateMemberCount();
+  updateProgress();
+}
+
+function updateMemberCount() {
+  var count = document.querySelectorAll('.member-item').length;
+  document.getElementById('memberCountBadge').textContent = count + (count === 1 ? ' membro' : ' membros');
+}
+
+// ── Barra de progresso ─────────────────────────────────────────
+function updateProgress() {
+  var s1 = document.getElementById('nomeGrupo').value.trim() && document.getElementById('ministerio').value;
+  var s2 = document.getElementById('liderNome').value.trim() && document.getElementById('liderWhats').value.trim() && document.getElementById('supervisor').value.trim();
+  var s3 = document.querySelectorAll('.member-item').length > 0;
+  var done = (s1 ? 1 : 0) + (s2 ? 1 : 0) + (s3 ? 1 : 0);
+  document.getElementById('progressFill').style.width = (done / 3 * 100) + '%';
+  document.getElementById('progressLabel').textContent = done + ' de 3 seções preenchidas';
+}
+document.getElementById('gcForm').addEventListener('input', updateProgress);
+
+// ── Validação ──────────────────────────────────────────────────
+function validate() {
+  var ok = true;
+  var required = ['nomeGrupo','ministerio','diaSemana','horario','bairro','liderNome','liderWhats','temColider','supervisor'];
+  required.forEach(function(id) {
+    var el = document.getElementById(id);
+    var err = document.getElementById('err-' + id);
+    if (!el || !el.value.trim()) {
+      if (el) el.classList.add('error');
+      if (err) err.style.display = 'block';
+      ok = false;
+    } else {
+      if (el) el.classList.remove('error');
+      if (err) err.style.display = 'none';
+    }
+  });
+
+  // Líder 2 obrigatório se Somos Um
+  if (isSomosUm) {
+    ['lider2Nome','lider2Whats'].forEach(function(id) {
+      var el = document.getElementById(id);
+      var err = document.getElementById('err-' + id);
+      if (!el.value.trim()) {
+        el.classList.add('error');
+        if (err) err.style.display = 'block';
+        ok = false;
+      } else {
+        el.classList.remove('error');
+        if (err) err.style.display = 'none';
+      }
+    });
+  }
+
+  // Membros — nome obrigatório
+  document.querySelectorAll('.member-item').forEach(function(item) {
+    var n = item.querySelector('.m-nome');
+    if (n && !n.value.trim()) { n.classList.add('error'); ok = false; }
+    else if (n) n.classList.remove('error');
+  });
+
+  return ok;
+}
+
+
+  return rows.map(function(row) {
+    return row.map(function(cell) {
+      return '"' + (cell || '').toString().replace(/"/g, '""') + '"';
+    }).join(',');
+  }).join('\n');
+}
+
+// ── URL do Google Apps Script — substitua após publicar ────────
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkPSaz_WYl-w4PuXFQTtmQwA5D_OgQ_hkvW7kQblU359FvmOK01qFSkft7-DL6_EqVbA/exec';
+
+// ── Helpers
+function v(id) {
+  var el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+// ── Coleta todos os dados em objeto estruturado ────────────────
+function buildPayload() {
+  var members = [];
+  document.querySelectorAll('.member-item').forEach(function(item) {
+    members.push({
+      nome:          (item.querySelector('.m-nome')  || {}).value || '',
+      whatsapp:      (item.querySelector('.m-whats') || {}).value || '',
+      email:         (item.querySelector('.m-email') || {}).value || '',
+      proximo_passo: (item.querySelector('.m-passo') || {}).value || ''
+    });
+  });
+  return {
+    nome_grupo:    v('nomeGrupo'),
+    ministerio:    v('ministerio'),
+    dia_semana:    v('diaSemana'),
+    horario:       v('horario'),
+    bairro:        v('bairro'),
+    obs_grupo:     v('obsGrupo'),
+    lider_nome:    v('liderNome'),
+    lider_whats:   v('liderWhats'),
+    lider_email:   v('liderEmail'),
+    lider2_nome:   v('lider2Nome'),
+    lider2_whats:  v('lider2Whats'),
+    lider2_email:  v('lider2Email'),
+    tem_colider:   v('temColider'),
+    colider_nome:  v('coliderNome'),
+    colider_whats: v('coliderWhats'),
+    colider2_nome: v('colider2Nome'),
+    colider2_whats:v('colider2Whats'),
+    supervisor:    v('supervisor'),
+    membros:       members
+  };
+}
+
+// ── Submit ─────────────────────────────────────────────────────
+document.getElementById('gcForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (!validate()) {
+    document.querySelector('.error') && document.querySelector('.error').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  var submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Enviando...';
+
+  var payload = buildPayload();
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function() {
+    mostrarSucesso(payload.nome_grupo);
+  })
+  .catch(function(err) {
+    console.error('Erro ao enviar:', err);
+    alert('Não foi possível enviar os dados. Verifique sua conexão e tente novamente.');
+    submitBtn.disabled = false;
+    submitBtn.textContent = '✓ Enviar cadastro';
+  });
+});
+
+function mostrarSucesso(nomeGrupo) {
+  document.getElementById('gcForm').style.display = 'none';
+  document.getElementById('successScreen').style.display = 'block';
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function novoGC() {
+  document.getElementById('gcForm').reset();
+  document.getElementById('memberList').innerHTML = '';
+  memberCount = 0;
+  isSomosUm = false;
+  updateMemberCount();
+  updateProgress();
+  document.getElementById('coliderFields').style.display = 'none';
+  document.getElementById('lider2Block').style.display = 'none';
+  document.getElementById('gcForm').style.display = 'block';
+  document.getElementById('successScreen').style.display = 'none';
+  document.querySelectorAll('.error').forEach(function(el){ el.classList.remove('error'); });
+  document.querySelectorAll('.error-msg').forEach(function(el){ el.style.display='none'; });
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function clearForm() {
+  if (confirm('Limpar todos os dados preenchidos?')) novoGC();
+}
+</script>
+</body>
+</html>
