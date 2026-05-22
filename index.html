@@ -374,22 +374,20 @@
 
   <form id="gcForm" novalidate>
 
-    <!-- ═══════════════════════════════════════════
-         SEÇÃO 1: DADOS DO GRUPO
-    ═══════════════════════════════════════════ -->
-    <div class="card" id="sec1">
+    <!-- DADOS DO GRUPO -->
+    <div class="card">
       <div class="card-title"><div class="icon">📋</div> Dados do Grupo</div>
 
       <div class="field">
         <label>Nome do grupo <span class="req">*</span></label>
-        <input type="text" id="nomeGrupo" placeholder="Ex: Somos Um — Aldeota Quinta-feira" required>
+        <input type="text" id="nomeGrupo" placeholder="Ex: Somos Um — Aldeota Quinta-feira">
         <div class="error-msg" id="err-nomeGrupo">Por favor, informe o nome do grupo.</div>
       </div>
 
       <div class="row-2">
         <div class="field">
           <label>Ministério <span class="req">*</span></label>
-          <select id="ministerio" required onchange="onMinisterioChange()">
+          <select id="ministerio">
             <option value="">Selecione...</option>
             <option>A13 Jr — 12 a 14 anos</option>
             <option>A13 School — 15 a 17 anos</option>
@@ -405,7 +403,7 @@
         </div>
         <div class="field">
           <label>Dia da semana <span class="req">*</span></label>
-          <select id="diaSemana" required>
+          <select id="diaSemana">
             <option value="">Selecione...</option>
             <option>Segunda-feira</option>
             <option>Terça-feira</option>
@@ -420,12 +418,12 @@
       <div class="row-2">
         <div class="field">
           <label>Horário de início <span class="req">*</span></label>
-          <input type="text" id="horario" placeholder="Ex: 19:30" required>
+          <input type="text" id="horario" placeholder="Ex: 19:30">
           <div class="error-msg" id="err-horario">Informe o horário.</div>
         </div>
         <div class="field">
           <label>Bairro / Localidade <span class="req">*</span></label>
-          <input type="text" id="bairro" placeholder="Ex: Aldeota" required>
+          <input type="text" id="bairro" placeholder="Ex: Aldeota">
           <div class="error-msg" id="err-bairro">Informe o bairro.</div>
         </div>
       </div>
@@ -436,58 +434,51 @@
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════
-         SEÇÃO 2: DADOS DO LÍDER
-    ═══════════════════════════════════════════ -->
-    <div class="card" id="sec2">
+    <!-- DADOS DO LÍDER -->
+    <div class="card">
       <div class="card-title"><div class="icon">👤</div> Dados do Líder</div>
 
-      <!-- Líder principal (sempre visível) -->
-      <div id="liderFields">
-        <div class="section-divider" id="lider1Label">Líder 1</div>
+      <div class="section-divider" id="lider1Label">Líder</div>
+      <div class="row-2">
+        <div class="field">
+          <label>Nome completo <span class="req">*</span></label>
+          <input type="text" id="liderNome" placeholder="Nome do líder">
+          <div class="error-msg" id="err-liderNome">Informe o nome do líder.</div>
+        </div>
+        <div class="field">
+          <label>WhatsApp <span class="req">*</span></label>
+          <input type="tel" id="liderWhats" placeholder="(85) 99999-9999">
+          <div class="error-msg" id="err-liderWhats">Informe o WhatsApp do líder.</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>E-mail <span class="hint">(opcional)</span></label>
+        <input type="email" id="liderEmail" placeholder="email@exemplo.com">
+      </div>
+
+      <div id="lider2Block" style="display:none">
+        <div class="section-divider">Líder 2</div>
         <div class="row-2">
           <div class="field">
             <label>Nome completo <span class="req">*</span></label>
-            <input type="text" id="liderNome" placeholder="Nome do líder" required>
-            <div class="error-msg" id="err-liderNome">Informe o nome do líder.</div>
+            <input type="text" id="lider2Nome" placeholder="Nome do líder 2">
+            <div class="error-msg" id="err-lider2Nome">Informe o nome do líder 2.</div>
           </div>
           <div class="field">
             <label>WhatsApp <span class="req">*</span></label>
-            <input type="tel" id="liderWhats" placeholder="(85) 99999-9999" required oninput="validarContatosMembros()">
-            <div class="error-msg" id="err-liderWhats">Informe o WhatsApp do líder.</div>
+            <input type="tel" id="lider2Whats" placeholder="(85) 99999-9999">
+            <div class="error-msg" id="err-lider2Whats">Informe o WhatsApp do líder 2.</div>
           </div>
         </div>
         <div class="field">
           <label>E-mail <span class="hint">(opcional)</span></label>
-          <input type="email" id="liderEmail" placeholder="email@exemplo.com" oninput="validarContatosMembros()">
-        </div>
-
-        <!-- Líder 2 — aparece se Somos Um -->
-        <div id="lider2Block" style="display:none">
-          <div class="section-divider">Líder 2</div>
-          <div class="row-2">
-            <div class="field">
-              <label>Nome completo <span class="req">*</span></label>
-              <input type="text" id="lider2Nome" placeholder="Nome do líder 2">
-              <div class="error-msg" id="err-lider2Nome">Informe o nome do líder 2.</div>
-            </div>
-            <div class="field">
-              <label>WhatsApp <span class="req">*</span></label>
-              <input type="tel" id="lider2Whats" placeholder="(85) 99999-9999" oninput="validarContatosMembros()">
-              <div class="error-msg" id="err-lider2Whats">Informe o WhatsApp do líder 2.</div>
-            </div>
-          </div>
-          <div class="field">
-            <label>E-mail <span class="hint">(opcional)</span></label>
-            <input type="email" id="lider2Email" placeholder="email@exemplo.com" oninput="validarContatosMembros()">
-          </div>
+          <input type="email" id="lider2Email" placeholder="email@exemplo.com">
         </div>
       </div>
 
-      <!-- Co-líder -->
       <div class="field" style="margin-top:16px">
         <label>Tem co-líder? <span class="req">*</span></label>
-        <select id="temColider" required onchange="toggleColider(this.value)">
+        <select id="temColider">
           <option value="">Selecione...</option>
           <option value="nao">Não</option>
           <option value="sim">Sim</option>
@@ -499,77 +490,73 @@
         <div class="section-divider">Co-líder 1</div>
         <div class="row-2">
           <div class="field">
-            <label>Nome do co-líder 1</label>
+            <label>Nome</label>
             <input type="text" id="coliderNome" placeholder="Nome do co-líder 1">
           </div>
           <div class="field">
-            <label>WhatsApp do co-líder 1</label>
-            <input type="tel" id="coliderWhats" placeholder="(85) 99999-9999" oninput="validarContatosMembros()">
+            <label>WhatsApp</label>
+            <input type="tel" id="coliderWhats" placeholder="(85) 99999-9999">
           </div>
         </div>
         <div class="section-divider">Co-líder 2</div>
         <div class="row-2">
           <div class="field">
-            <label>Nome do co-líder 2 <span class="hint">(se houver)</span></label>
+            <label>Nome <span class="hint">(se houver)</span></label>
             <input type="text" id="colider2Nome" placeholder="Nome do co-líder 2">
           </div>
           <div class="field">
-            <label>WhatsApp do co-líder 2</label>
-            <input type="tel" id="colider2Whats" placeholder="(85) 99999-9999" oninput="validarContatosMembros()">
+            <label>WhatsApp</label>
+            <input type="tel" id="colider2Whats" placeholder="(85) 99999-9999">
           </div>
         </div>
       </div>
 
-      <!-- Supervisores Pastorais -->
       <div class="field" style="margin-top:16px">
         <label>Supervisores Pastorais responsáveis <span class="req">*</span></label>
-        <input type="text" id="supervisor" placeholder="Nome(s) do(s) supervisor(es) ou coordenador(es)" required>
+        <input type="text" id="supervisor" placeholder="Nome(s) do(s) supervisor(es)">
         <div class="error-msg" id="err-supervisor">Informe o supervisor pastoral responsável.</div>
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════
-         SEÇÃO 3: MEMBROS
-    ═══════════════════════════════════════════ -->
-    <div class="card" id="sec3">
+    <!-- MEMBROS -->
+    <div class="card">
       <div class="card-title">
         <div class="icon">👥</div>
         Membros do GC
         <span class="member-count-badge" id="memberCountBadge">0 membros</span>
       </div>
-
       <div class="info-box">
-        Adicione todos os membros do grupo. O líder <strong>não</strong> precisa ser listado aqui novamente. O sistema avisará se um WhatsApp ou e-mail já cadastrado no líder for usado em um membro.
+        Adicione todos os membros do grupo. O líder <strong>não</strong> precisa ser listado aqui. O formulário avisará se um contato do líder for usado em um membro.
       </div>
-
       <div class="member-list" id="memberList"></div>
-
-      <button type="button" class="btn-add-member" onclick="addMember()">
+      <button type="button" class="btn-add-member" id="btnAddMember">
         <span class="plus">+</span> Adicionar membro
       </button>
     </div>
 
     <div class="footer-actions">
-      <button type="button" class="btn-secondary" onclick="clearForm()">Limpar</button>
+      <button type="button" class="btn-secondary" id="btnClear">Limpar</button>
       <button type="submit" class="btn-primary" id="submitBtn">✓ Enviar cadastro</button>
     </div>
   </form>
 
-  <!-- Tela de sucesso -->
   <div class="success-screen" id="successScreen">
     <div class="success-icon">✓</div>
     <h2>GC cadastrado com sucesso!</h2>
     <p>Os dados foram enviados para a planilha com sucesso!</p>
-    <br><br>
-    <button class="btn-secondary" onclick="novoGC()" style="margin-top:8px">+ Cadastrar outro GC</button>
+    <br>
+    <button class="btn-secondary" id="btnNovoGC" style="margin-top:8px">+ Cadastrar outro GC</button>
   </div>
 </div>
 
 <script>
-var memberCount = 0;
 
-var PASSOS_DESC = {
-  '': '',
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkPSaz_WYl-w4PuXFQTtmQwA5D_OgQ_hkvW7kQblU359FvmOK01qFSkft7-DL6_EqVbA/exec';
+
+var memberCount = 0;
+var isSomosUm = false;
+
+var PASSOS = {
   '1 — DECIDIR':  'Conhecendo a igreja, mas ainda não aceitou a Jesus como Senhor e Salvador.',
   '2 — CONECTAR': 'Novo decidido, mas ainda não é membro de um GC.',
   '3 — CONHECER': 'Membro do GC, mas ainda não iniciou a trilha Fundamentos.',
@@ -577,37 +564,38 @@ var PASSOS_DESC = {
   '5 — LIDERAR':  'Fez Fundamentos, é voluntário e está em GC, mas ainda não fez o PFL.'
 };
 
-var isSomosUm = false;
+// ── Helpers ────────────────────────────────────────────────────
+function val(id) {
+  var el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
 
+function showErr(id, show) {
+  var el = document.getElementById(id);
+  if (el) el.style.display = show ? 'block' : 'none';
+  var input = document.getElementById(id.replace('err-', ''));
+  if (input) input.classList.toggle('error', show);
+}
+
+// ── Ministério ─────────────────────────────────────────────────
 function onMinisterioChange() {
-  var val = document.getElementById('ministerio').value;
-  isSomosUm = val === 'Somos Um (Casais)';
+  var v = document.getElementById('ministerio').value;
+  isSomosUm = (v === 'Somos Um (Casais)');
   document.getElementById('lider2Block').style.display = isSomosUm ? 'block' : 'none';
   document.getElementById('lider1Label').textContent = isSomosUm ? 'Líder 1' : 'Líder';
-
-  // Tornar campos do líder 2 required/not-required dinamicamente
-  var l2n = document.getElementById('lider2Nome');
-  var l2w = document.getElementById('lider2Whats');
-  if (isSomosUm) {
-    l2n.setAttribute('required', '');
-    l2w.setAttribute('required', '');
-  } else {
-    l2n.removeAttribute('required');
-    l2w.removeAttribute('required');
-  }
   updateProgress();
 }
 
-function toggleColider(val) {
-  document.getElementById('coliderFields').style.display = val === 'sim' ? 'block' : 'none';
+// ── Co-líder ───────────────────────────────────────────────────
+function toggleColider(v) {
+  document.getElementById('coliderFields').style.display = v === 'sim' ? 'block' : 'none';
 }
 
-// ── Contatos do líder para validação duplicata ──────────────────
+// ── Contatos do líder ──────────────────────────────────────────
 function getContatosLider() {
   var set = new Set();
   ['liderWhats','liderEmail','lider2Whats','lider2Email','coliderWhats','colider2Whats'].forEach(function(id) {
-    var el = document.getElementById(id);
-    var v = el ? el.value.trim().toLowerCase().replace(/\s/g,'') : '';
+    var v = val(id).toLowerCase().replace(/\s/g,'');
     if (v) set.add(v);
   });
   return set;
@@ -616,36 +604,35 @@ function getContatosLider() {
 function validarContatosMembros() {
   var contatos = getContatosLider();
   document.querySelectorAll('.member-item').forEach(function(item) {
-    var wInput = item.querySelector('.m-whats');
-    var eInput = item.querySelector('.m-email');
-    var warn   = item.querySelector('.warn-dup');
-    var flagged = false;
-    if (wInput) {
-      var wv = wInput.value.trim().toLowerCase().replace(/\s/g,'');
-      if (wv && contatos.has(wv)) flagged = true;
-    }
-    if (eInput) {
-      var ev = eInput.value.trim().toLowerCase();
-      if (ev && contatos.has(ev)) flagged = true;
-    }
-    if (warn) {
-      warn.classList.toggle('visible', flagged);
-    }
+    var wv = (item.querySelector('.m-whats') || {value:''}).value.trim().toLowerCase().replace(/\s/g,'');
+    var ev = (item.querySelector('.m-email') || {value:''}).value.trim().toLowerCase();
+    var flagged = (wv && contatos.has(wv)) || (ev && contatos.has(ev));
+    var warn = item.querySelector('.warn-dup');
+    if (warn) warn.classList.toggle('visible', flagged);
   });
 }
 
-// ── Adicionar membro ────────────────────────────────────────────
+// ── Membros ────────────────────────────────────────────────────
+function buildPassosLegend() {
+  return '<div class="passos-legend">' +
+    '<div class="passo-leg"><span class="passo-num">1</span><span><strong>DECIDIR</strong> — Conhecendo a igreja, mas ainda não aceitou a Jesus como Senhor e Salvador.</span></div>' +
+    '<div class="passo-leg"><span class="passo-num">2</span><span><strong>CONECTAR</strong> — Novo decidido, mas ainda não é membro de um GC.</span></div>' +
+    '<div class="passo-leg"><span class="passo-num">3</span><span><strong>CONHECER</strong> — Membro do GC, mas ainda não iniciou a trilha Fundamentos.</span></div>' +
+    '<div class="passo-leg"><span class="passo-num">4</span><span><strong>SERVIR</strong> — Faz parte da igreja, mas ainda não é voluntário.</span></div>' +
+    '<div class="passo-leg"><span class="passo-num">5</span><span><strong>LIDERAR</strong> — Fez Fundamentos, é voluntário e está em GC, mas ainda não fez o PFL.</span></div>' +
+  '</div>';
+}
+
 function addMember() {
   memberCount++;
-  var list = document.getElementById('memberList');
+  var n = memberCount;
   var div = document.createElement('div');
   div.className = 'member-item';
-  div.id = 'member-' + memberCount;
-  var idx = memberCount;
+  div.id = 'member-' + n;
   div.innerHTML =
     '<div class="member-item-header">' +
-      '<span class="member-number">Membro #' + idx + '</span>' +
-      '<button type="button" class="btn-remove" onclick="removeMember(' + idx + ')" title="Remover">×</button>' +
+      '<span class="member-number">Membro #' + n + '</span>' +
+      '<button type="button" class="btn-remove" data-id="' + n + '" title="Remover">\u00d7</button>' +
     '</div>' +
     '<div class="row-2">' +
       '<div class="field">' +
@@ -654,199 +641,113 @@ function addMember() {
       '</div>' +
       '<div class="field">' +
         '<label>WhatsApp</label>' +
-        '<input type="tel" class="m-whats" placeholder="(85) 99999-9999" oninput="validarContatosMembros()">' +
+        '<input type="tel" class="m-whats" placeholder="(85) 99999-9999">' +
       '</div>' +
     '</div>' +
     '<div class="field">' +
       '<label>E-mail <span class="hint">(opcional)</span></label>' +
-      '<input type="email" class="m-email" placeholder="email@exemplo.com" oninput="validarContatosMembros()">' +
+      '<input type="email" class="m-email" placeholder="email@exemplo.com">' +
     '</div>' +
-    '<div class="warn-box warn-dup">⚠ Este WhatsApp ou e-mail já está cadastrado como líder. Verifique se não é um cadastro duplicado.</div>' +
+    '<div class="warn-box warn-dup">\u26a0 Este WhatsApp ou e-mail j\u00e1 est\u00e1 cadastrado como l\u00edder. Verifique se n\u00e3o \u00e9 um cadastro duplicado.</div>' +
     '<div class="field">' +
-      '<label>Próximo passo</label>' +
-      '<div class="passos-legend">' +
-        '<div class="passo-leg"><span class="passo-num">1</span><span><strong>DECIDIR</strong> — Conhecendo a igreja, mas ainda não aceitou a Jesus como Senhor e Salvador.</span></div>' +
-        '<div class="passo-leg"><span class="passo-num">2</span><span><strong>CONECTAR</strong> — Novo decidido, mas ainda não é membro de um GC.</span></div>' +
-        '<div class="passo-leg"><span class="passo-num">3</span><span><strong>CONHECER</strong> — Membro do GC, mas ainda não iniciou a trilha Fundamentos.</span></div>' +
-        '<div class="passo-leg"><span class="passo-num">4</span><span><strong>SERVIR</strong> — Faz parte da igreja, mas ainda não é voluntário.</span></div>' +
-        '<div class="passo-leg"><span class="passo-num">5</span><span><strong>LIDERAR</strong> — Fez Fundamentos, é voluntário e está em GC, mas ainda não fez o PFL.</span></div>' +
-      '</div>' +
-      '<select class="m-passo" onchange="updatePassoDesc(this)">' +
-        '<option value="">Não informado</option>' +
-        '<option>1 — DECIDIR</option>' +
-        '<option>2 — CONECTAR</option>' +
-        '<option>3 — CONHECER</option>' +
-        '<option>4 — SERVIR</option>' +
-        '<option>5 — LIDERAR</option>' +
+      '<label>Pr\u00f3ximo passo</label>' +
+      buildPassosLegend() +
+      '<select class="m-passo">' +
+        '<option value="">N\u00e3o informado</option>' +
+        '<option>1 \u2014 DECIDIR</option>' +
+        '<option>2 \u2014 CONECTAR</option>' +
+        '<option>3 \u2014 CONHECER</option>' +
+        '<option>4 \u2014 SERVIR</option>' +
+        '<option>5 \u2014 LIDERAR</option>' +
       '</select>' +
     '</div>';
-  list.appendChild(div);
+  document.getElementById('memberList').appendChild(div);
   updateMemberCount();
   updateProgress();
-}
-
-function updatePassoDesc(sel) {
-  var item = sel.closest('.member-item');
-  if (!item) return;
-  var tip = item.querySelector('.passo-tooltip');
-  if (!tip) return;
-  var desc = PASSOS_DESC[sel.value] || '';
-  tip.textContent = desc;
-  tip.classList.toggle('visible', !!desc);
 }
 
 function removeMember(id) {
   var el = document.getElementById('member-' + id);
-  if (el) el.remove();
-  updateMemberCount();
-  updateProgress();
+  if (el) { el.remove(); updateMemberCount(); updateProgress(); }
 }
 
 function updateMemberCount() {
-  var count = document.querySelectorAll('.member-item').length;
-  document.getElementById('memberCountBadge').textContent = count + (count === 1 ? ' membro' : ' membros');
+  var n = document.querySelectorAll('.member-item').length;
+  document.getElementById('memberCountBadge').textContent = n + (n === 1 ? ' membro' : ' membros');
 }
 
-// ── Barra de progresso ─────────────────────────────────────────
+// ── Progresso ──────────────────────────────────────────────────
 function updateProgress() {
-  var s1 = document.getElementById('nomeGrupo').value.trim() && document.getElementById('ministerio').value;
-  var s2 = document.getElementById('liderNome').value.trim() && document.getElementById('liderWhats').value.trim() && document.getElementById('supervisor').value.trim();
+  var s1 = val('nomeGrupo') && val('ministerio');
+  var s2 = val('liderNome') && val('liderWhats') && val('supervisor');
   var s3 = document.querySelectorAll('.member-item').length > 0;
   var done = (s1 ? 1 : 0) + (s2 ? 1 : 0) + (s3 ? 1 : 0);
   document.getElementById('progressFill').style.width = (done / 3 * 100) + '%';
   document.getElementById('progressLabel').textContent = done + ' de 3 seções preenchidas';
 }
-document.getElementById('gcForm').addEventListener('input', updateProgress);
 
 // ── Validação ──────────────────────────────────────────────────
 function validate() {
   var ok = true;
-  var required = ['nomeGrupo','ministerio','diaSemana','horario','bairro','liderNome','liderWhats','temColider','supervisor'];
-  required.forEach(function(id) {
-    var el = document.getElementById(id);
-    var err = document.getElementById('err-' + id);
-    if (!el || !el.value.trim()) {
-      if (el) el.classList.add('error');
-      if (err) err.style.display = 'block';
-      ok = false;
-    } else {
-      if (el) el.classList.remove('error');
-      if (err) err.style.display = 'none';
-    }
+  ['nomeGrupo','ministerio','diaSemana','horario','bairro','liderNome','liderWhats','temColider','supervisor'].forEach(function(id) {
+    var empty = !val(id);
+    showErr('err-' + id, empty);
+    if (empty) ok = false;
   });
-
-  // Líder 2 obrigatório se Somos Um
   if (isSomosUm) {
     ['lider2Nome','lider2Whats'].forEach(function(id) {
-      var el = document.getElementById(id);
-      var err = document.getElementById('err-' + id);
-      if (!el.value.trim()) {
-        el.classList.add('error');
-        if (err) err.style.display = 'block';
-        ok = false;
-      } else {
-        el.classList.remove('error');
-        if (err) err.style.display = 'none';
-      }
+      var empty = !val(id);
+      showErr('err-' + id, empty);
+      if (empty) ok = false;
     });
   }
-
-  // Membros — nome obrigatório
   document.querySelectorAll('.member-item').forEach(function(item) {
     var n = item.querySelector('.m-nome');
-    if (n && !n.value.trim()) { n.classList.add('error'); ok = false; }
-    else if (n) n.classList.remove('error');
+    if (n) n.classList.toggle('error', !n.value.trim());
+    if (n && !n.value.trim()) ok = false;
   });
-
   return ok;
 }
 
-
-  return rows.map(function(row) {
-    return row.map(function(cell) {
-      return '"' + (cell || '').toString().replace(/"/g, '""') + '"';
-    }).join(',');
-  }).join('\n');
-}
-
-// ── URL do Google Apps Script — substitua após publicar ────────
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkPSaz_WYl-w4PuXFQTtmQwA5D_OgQ_hkvW7kQblU359FvmOK01qFSkft7-DL6_EqVbA/exec';
-
-// ── Helpers
-function v(id) {
-  var el = document.getElementById(id);
-  return el ? el.value.trim() : '';
-}
-
-// ── Coleta todos os dados em objeto estruturado ────────────────
+// ── Payload ────────────────────────────────────────────────────
 function buildPayload() {
-  var members = [];
+  var membros = [];
   document.querySelectorAll('.member-item').forEach(function(item) {
-    members.push({
-      nome:          (item.querySelector('.m-nome')  || {}).value || '',
-      whatsapp:      (item.querySelector('.m-whats') || {}).value || '',
-      email:         (item.querySelector('.m-email') || {}).value || '',
-      proximo_passo: (item.querySelector('.m-passo') || {}).value || ''
+    membros.push({
+      nome:          (item.querySelector('.m-nome')  || {value:''}).value.trim(),
+      whatsapp:      (item.querySelector('.m-whats') || {value:''}).value.trim(),
+      email:         (item.querySelector('.m-email') || {value:''}).value.trim(),
+      proximo_passo: (item.querySelector('.m-passo') || {value:''}).value.trim()
     });
   });
   return {
-    nome_grupo:    v('nomeGrupo'),
-    ministerio:    v('ministerio'),
-    dia_semana:    v('diaSemana'),
-    horario:       v('horario'),
-    bairro:        v('bairro'),
-    obs_grupo:     v('obsGrupo'),
-    lider_nome:    v('liderNome'),
-    lider_whats:   v('liderWhats'),
-    lider_email:   v('liderEmail'),
-    lider2_nome:   v('lider2Nome'),
-    lider2_whats:  v('lider2Whats'),
-    lider2_email:  v('lider2Email'),
-    tem_colider:   v('temColider'),
-    colider_nome:  v('coliderNome'),
-    colider_whats: v('coliderWhats'),
-    colider2_nome: v('colider2Nome'),
-    colider2_whats:v('colider2Whats'),
-    supervisor:    v('supervisor'),
-    membros:       members
+    nome_grupo:    val('nomeGrupo'),
+    ministerio:    val('ministerio'),
+    dia_semana:    val('diaSemana'),
+    horario:       val('horario'),
+    bairro:        val('bairro'),
+    obs_grupo:     val('obsGrupo'),
+    lider_nome:    val('liderNome'),
+    lider_whats:   val('liderWhats'),
+    lider_email:   val('liderEmail'),
+    lider2_nome:   val('lider2Nome'),
+    lider2_whats:  val('lider2Whats'),
+    lider2_email:  val('lider2Email'),
+    tem_colider:   val('temColider'),
+    colider_nome:  val('coliderNome'),
+    colider_whats: val('coliderWhats'),
+    colider2_nome: val('colider2Nome'),
+    colider2_whats:val('colider2Whats'),
+    supervisor:    val('supervisor'),
+    membros:       membros
   };
 }
 
 // ── Submit ─────────────────────────────────────────────────────
-document.getElementById('gcForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  if (!validate()) {
-    document.querySelector('.error') && document.querySelector('.error').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
-  }
-
-  var submitBtn = document.getElementById('submitBtn');
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Enviando...';
-
-  var payload = buildPayload();
-
-  fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  .then(function() {
-    mostrarSucesso(payload.nome_grupo);
-  })
-  .catch(function(err) {
-    console.error('Erro ao enviar:', err);
-    alert('Não foi possível enviar os dados. Verifique sua conexão e tente novamente.');
-    submitBtn.disabled = false;
-    submitBtn.textContent = '✓ Enviar cadastro';
-  });
-});
-
-function mostrarSucesso(nomeGrupo) {
+function mostrarSucesso() {
   document.getElementById('gcForm').style.display = 'none';
   document.getElementById('successScreen').style.display = 'block';
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function novoGC() {
@@ -860,14 +761,87 @@ function novoGC() {
   document.getElementById('lider2Block').style.display = 'none';
   document.getElementById('gcForm').style.display = 'block';
   document.getElementById('successScreen').style.display = 'none';
-  document.querySelectorAll('.error').forEach(function(el){ el.classList.remove('error'); });
-  document.querySelectorAll('.error-msg').forEach(function(el){ el.style.display='none'; });
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  document.querySelectorAll('.error').forEach(function(el) { el.classList.remove('error'); });
+  document.querySelectorAll('.error-msg').forEach(function(el) { el.style.display = 'none'; });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function clearForm() {
-  if (confirm('Limpar todos os dados preenchidos?')) novoGC();
+  if (window.confirm('Limpar todos os dados preenchidos?')) novoGC();
 }
+
+// ── Listeners (todos via addEventListener, sem onclick inline) ──
+document.addEventListener('DOMContentLoaded', function() {
+
+  // Botão adicionar membro
+  document.getElementById('btnAddMember').addEventListener('click', addMember);
+
+  // Remover membro (delegação)
+  document.getElementById('memberList').addEventListener('click', function(e) {
+    var btn = e.target.closest('.btn-remove');
+    if (btn) removeMember(btn.getAttribute('data-id'));
+  });
+
+  // Inputs de contato do líder
+  ['liderWhats','liderEmail','lider2Whats','lider2Email','coliderWhats','colider2Whats'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('input', validarContatosMembros);
+  });
+
+  // Inputs de contato dos membros (delegação)
+  document.getElementById('memberList').addEventListener('input', function(e) {
+    if (e.target.classList.contains('m-whats') || e.target.classList.contains('m-email')) {
+      validarContatosMembros();
+    }
+  });
+
+  // Progresso
+  document.getElementById('gcForm').addEventListener('input', updateProgress);
+
+  // Ministério
+  document.getElementById('ministerio').addEventListener('change', onMinisterioChange);
+
+  // Co-líder
+  document.getElementById('temColider').addEventListener('change', function() {
+    toggleColider(this.value);
+  });
+
+  // Submit
+  document.getElementById('gcForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!validate()) {
+      var first = document.querySelector('.error');
+      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    var payload = buildPayload();
+
+    // Mostra confirmação imediatamente (no-cors não retorna resposta)
+    mostrarSucesso();
+
+    // Envia em segundo plano
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(function(err) {
+      console.error('Erro ao enviar para planilha:', err);
+    });
+
+    btn.disabled = false;
+    btn.textContent = '✓ Enviar cadastro';
+  });
+
+});
+
+// Botões sem onclick inline
+document.getElementById('btnClear').addEventListener('click', clearForm);
+document.getElementById('btnNovoGC').addEventListener('click', novoGC);
 </script>
 </body>
 </html>
