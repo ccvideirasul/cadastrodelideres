@@ -452,8 +452,9 @@
         </div>
       </div>
       <div class="field">
-        <label>E-mail <span class="hint">(opcional)</span></label>
+        <label>E-mail <span class="req">*</span></label>
         <input type="email" id="liderEmail" placeholder="email@exemplo.com">
+        <div class="error-msg" id="err-liderEmail">Informe o e-mail do líder.</div>
       </div>
 
       <div id="lider2Block" style="display:none">
@@ -471,8 +472,9 @@
           </div>
         </div>
         <div class="field">
-          <label>E-mail <span class="hint">(opcional)</span></label>
+          <label>E-mail <span class="req">*</span></label>
           <input type="email" id="lider2Email" placeholder="email@exemplo.com">
+          <div class="error-msg" id="err-lider2Email">Informe o e-mail do líder 2.</div>
         </div>
       </div>
 
@@ -662,6 +664,12 @@ function addMember() {
       '</select>' +
     '</div>';
   document.getElementById('memberList').appendChild(div);
+  // Aplicar máscara no campo de WhatsApp do membro recém-criado
+  var whatsInput = div.querySelector('.m-whats');
+  if (whatsInput) {
+    whatsInput.addEventListener('input', function() { formatarTelefone(this); });
+    whatsInput.setAttribute('maxlength', '15');
+  }
   updateMemberCount();
   updateProgress();
 }
@@ -689,22 +697,60 @@ function updateProgress() {
 // ── Validação ──────────────────────────────────────────────────
 function validate() {
   var ok = true;
-  ['nomeGrupo','ministerio','diaSemana','horario','bairro','liderNome','liderWhats','temColider','supervisor'].forEach(function(id) {
+  // Campos de texto obrigatórios
+  ['nomeGrupo','ministerio','diaSemana','horario','bairro','liderNome','liderWhats','liderEmail','temColider','supervisor'].forEach(function(id) {
     var empty = !val(id);
     showErr('err-' + id, empty);
     if (empty) ok = false;
   });
+
+  // Validar formato do WhatsApp do líder 1
+  var lw = document.getElementById('liderWhats');
+  if (lw && val('liderWhats') && !validarTelefone(lw)) {
+    showErr('err-liderWhats', true);
+    document.getElementById('err-liderWhats').textContent = 'Informe um número válido com DDD (11 dígitos).';
+    ok = false;
+  } else if (lw && val('liderWhats')) {
+    document.getElementById('err-liderWhats').textContent = 'Informe o WhatsApp do líder.';
+  }
+
   if (isSomosUm) {
-    ['lider2Nome','lider2Whats'].forEach(function(id) {
+    ['lider2Nome','lider2Whats','lider2Email'].forEach(function(id) {
       var empty = !val(id);
       showErr('err-' + id, empty);
       if (empty) ok = false;
     });
+    // Validar formato do WhatsApp do líder 2
+    var lw2 = document.getElementById('lider2Whats');
+    if (lw2 && val('lider2Whats') && !validarTelefone(lw2)) {
+      showErr('err-lider2Whats', true);
+      document.getElementById('err-lider2Whats').textContent = 'Informe um número válido com DDD (11 dígitos).';
+      ok = false;
+    }
   }
+
+  // Validar WhatsApp de co-líderes se preenchidos
+  ['coliderWhats','colider2Whats'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && el.value.trim() && !validarTelefone(el)) {
+      el.classList.add('error');
+      ok = false;
+    } else if (el) {
+      el.classList.remove('error');
+    }
+  });
   document.querySelectorAll('.member-item').forEach(function(item) {
     var n = item.querySelector('.m-nome');
     if (n) n.classList.toggle('error', !n.value.trim());
     if (n && !n.value.trim()) ok = false;
+    // Validar WhatsApp do membro se preenchido
+    var w = item.querySelector('.m-whats');
+    if (w && w.value.trim() && !validarTelefone(w)) {
+      w.classList.add('error');
+      ok = false;
+    } else if (w && w.value.trim()) {
+      w.classList.remove('error');
+    }
   });
   return ok;
 }
@@ -773,6 +819,9 @@ function clearForm() {
 // ── Listeners (todos via addEventListener, sem onclick inline) ──
 document.addEventListener('DOMContentLoaded', function() {
 
+  // Máscaras de telefone nos campos fixos
+  ['liderWhats','lider2Whats','coliderWhats','colider2Whats'].forEach(aplicarMascaraTelefone);
+
   // Botão adicionar membro
   document.getElementById('btnAddMember').addEventListener('click', addMember);
 
@@ -839,7 +888,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-// Botões sem onclick inline
+// ── Formatação e validação de telefone ────────────────────────
+function formatarTelefone(input) {
+  var digits = input.value.replace(/\D/g, '').slice(0, 11);
+  var formatted = digits;
+  if (digits.length > 2)  formatted = '(' + digits.slice(0,2) + ') ' + digits.slice(2);
+  if (digits.length > 7)  formatted = '(' + digits.slice(0,2) + ') ' + digits.slice(2,7) + '-' + digits.slice(7);
+  input.value = formatted;
+}
+
+function validarTelefone(input) {
+  var digits = input.value.replace(/\D/g, '');
+  return digits.length === 11;
+}
+
+function aplicarMascaraTelefone(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', function() { formatarTelefone(this); });
+  el.setAttribute('placeholder', '(85) 99999-9999');
+  el.setAttribute('maxlength', '15');
+}
+
+// ── Botões sem onclick inline
+
 document.getElementById('btnClear').addEventListener('click', clearForm);
 document.getElementById('btnNovoGC').addEventListener('click', novoGC);
 </script>
