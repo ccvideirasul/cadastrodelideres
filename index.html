@@ -608,10 +608,29 @@
       <!-- 4. Supervisor responsável -->
       <div class="card">
         <div class="card-title"><div class="icon">🧭</div> Supervisão Pastoral</div>
-        <div class="field">
-          <label>Supervisores Pastorais responsáveis <span class="req">*</span></label>
-          <input type="text" id="supervisorResp" placeholder="Nome(s) do(s) supervisor(es)">
-          <div class="error-msg" id="err-supervisorResp">Informe o supervisor pastoral.</div>
+        <div class="section-divider">Supervisor 1</div>
+        <div class="row-2">
+          <div class="field">
+            <label>Nome <span class="req">*</span></label>
+            <input type="text" id="supervisorResp" placeholder="Nome do supervisor 1">
+            <div class="error-msg" id="err-supervisorResp">Informe o supervisor pastoral.</div>
+          </div>
+          <div class="field">
+            <label>WhatsApp</label>
+            <input type="tel" id="supervisorRespWhats" class="tel-input" placeholder="(85) 99999-9999" maxlength="15">
+          </div>
+        </div>
+        <div class="section-divider">Supervisor 2</div>
+        <div class="row-2">
+          <div class="field">
+            <label>Nome <span class="req">*</span></label>
+            <input type="text" id="supervisor2Resp" placeholder="Nome do supervisor 2">
+            <div class="error-msg" id="err-supervisor2Resp">Informe o supervisor 2.</div>
+          </div>
+          <div class="field">
+            <label>WhatsApp</label>
+            <input type="tel" id="supervisor2RespWhats" class="tel-input" placeholder="(85) 99999-9999" maxlength="15">
+          </div>
         </div>
       </div>
     </div>
@@ -745,6 +764,34 @@
           <span class="plus">+</span> Adicionar GC
         </button>
       </div>
+
+      <div class="card">
+        <div class="card-title"><div class="icon">🏛️</div> Coordenação Pastoral</div>
+        <div class="section-divider">Coordenador 1</div>
+        <div class="row-2">
+          <div class="field">
+            <label>Nome <span class="req">*</span></label>
+            <input type="text" id="coordResp" placeholder="Nome do coordenador 1">
+            <div class="error-msg" id="err-coordResp">Informe o coordenador pastoral.</div>
+          </div>
+          <div class="field">
+            <label>WhatsApp</label>
+            <input type="tel" id="coordRespWhats" class="tel-input" placeholder="(85) 99999-9999" maxlength="15">
+          </div>
+        </div>
+        <div class="section-divider">Coordenador 2</div>
+        <div class="row-2">
+          <div class="field">
+            <label>Nome <span class="req">*</span></label>
+            <input type="text" id="coord2Resp" placeholder="Nome do coordenador 2">
+            <div class="error-msg" id="err-coord2Resp">Informe o coordenador 2.</div>
+          </div>
+          <div class="field">
+            <label>WhatsApp</label>
+            <input type="tel" id="coord2RespWhats" class="tel-input" placeholder="(85) 99999-9999" maxlength="15">
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ══ COORDENADOR PASTORAL ══ -->
@@ -867,7 +914,7 @@
 
 <script>
 
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkPSaz_WYl-w4PuXFQTtmQwA5D_OgQ_hkvW7kQblU359FvmOK01qFSkft7-DL6_EqVbA/exec';
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWIgAeIHoYSpCkYuYssp0U4q9pJHd4-hdWLbifOZAzN6Ys1PqxEYoIJI_PwW4k8BBWAg/exec';
 var funcaoAtual = '';
 var coliderCount = 0;
 var gcCount = 0;
@@ -1139,14 +1186,14 @@ function validate(){
 
   if(funcaoAtual==='lider'){
     var casais=val('minGC')==='Somos Um (Casais)';
-    ['minGC','nomeGrupo','diaSemana','horario','bairroGrupo'].forEach(function(id){
+    ['minGC','nomeGrupo','diaSemana','horario','bairroGrupo','supervisorResp','supervisor2Resp'].forEach(function(id){
       var empty=!val(id); showErr('err-'+id,empty); if(empty) ok=false;
     });
     if(!validarPessoa('l1',true)) ok=false;
     if(casais && !validarPessoa('l2',true)) ok=false;
   }
   if(funcaoAtual==='supervisor'){
-    ['nomeSupervisao','minSup'].forEach(function(id){
+    ['nomeSupervisao','minSup','coordResp','coord2Resp'].forEach(function(id){
       var empty=!val(id); showErr('err-'+id,empty); if(empty) ok=false;
     });
     if(!validarPessoa('s1',true)) ok=false;
@@ -1233,6 +1280,13 @@ function buildPayload(){
     ministerio_gc:val('minGC'),nome_grupo:val('nomeGrupo'),dia_semana:val('diaSemana'),
     horario:val('horario'),bairro_grupo:val('bairroGrupo'),obs_grupo:val('obsGrupo'),
     supervisor_resp:val('supervisorResp'),
+    supervisor_resp_whats:val('supervisorRespWhats'),
+    supervisor2_resp:val('supervisor2Resp'),
+    supervisor2_resp_whats:val('supervisor2RespWhats'),
+    coord_resp:val('coordResp'),
+    coord_resp_whats:val('coordRespWhats'),
+    coord2_resp:val('coord2Resp'),
+    coord2_resp_whats:val('coord2RespWhats'),
     lider1:coletarPessoa('l1'),lider2:coletarPessoa('l2'),colideres:coletarColiders(),
     // supervisor
     nome_supervisao:val('nomeSupervisao'),ministerio_sup:val('minSup'),
