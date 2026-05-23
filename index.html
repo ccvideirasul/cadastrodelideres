@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cadastro de GC — CCVideira Sul</title>
+<title>Cadastro de Liderança — CCVideira Sul</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -354,17 +354,52 @@
     .card { padding: 18px 16px; }
     header h1 { font-size: 19px; }
   }
+  .funcao-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 4px; }
+  .funcao-card {
+    border: 2px solid var(--gray-200); border-radius: var(--radius);
+    padding: 14px 10px; text-align: center; cursor: pointer;
+    transition: border-color 0.15s, background 0.15s; background: var(--white);
+    min-height: 56px; display: flex; align-items: center; justify-content: center;
+  }
+  .funcao-card:hover { border-color: var(--gray-500); background: var(--gray-50); }
+  .funcao-card.selected { border-color: var(--black); background: var(--gray-100); }
+  .funcao-card .funcao-label { font-size: 12px; font-weight: 600; color: var(--gray-700); text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.4; }
+  .funcao-card.selected .funcao-label { color: var(--black); }
+
+  .radio-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .radio-opt {
+    display: flex; align-items: center; gap: 7px;
+    border: 1.5px solid var(--border); border-radius: var(--radius);
+    padding: 9px 14px; cursor: pointer; font-size: 13px; color: var(--gray-700);
+    transition: border-color 0.15s, background 0.15s; user-select: none;
+  }
+  .radio-opt input[type=radio] { accent-color: var(--black); width: 14px; height: 14px; }
+  .radio-opt:has(input:checked) { border-color: var(--black); background: var(--gray-100); color: var(--black); font-weight: 500; }
+
+  .pessoa-block {
+    background: var(--gray-50); border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius); padding: 16px; margin-bottom: 12px;
+  }
+  .pessoa-block-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .pessoa-num { font-size: 11px; font-weight: 600; color: var(--gray-700); background: var(--gray-200); border-radius: 5px; padding: 3px 10px; font-family: 'DM Mono', monospace; }
+
+  .gc-item {
+    background: var(--gray-50); border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px;
+  }
+  .gc-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .gc-num { font-size: 11px; font-weight: 600; color: var(--gray-700); background: var(--gray-200); border-radius: 5px; padding: 3px 10px; font-family: 'DM Mono', monospace; }
+
+  @media (max-width: 520px) { .funcao-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
 <header>
   <div class="header-inner">
-    <div class="logo-badge">
-      <span>CCVideira Sul — Migração para InPeace</span>
-    </div>
-    <h1>Cadastro do seu Grupo de Crescimento</h1>
-    <p>Preencha os dados do GC e liste os membros para concluir a migração</p>
+    <div class="logo-badge"><span>CCVideira Sul — Migração para InPeace</span></div>
+    <h1>Cadastro de Liderança</h1>
+    <p>Para líderes de GC, supervisores e coordenadores pastorais</p>
   </div>
 </header>
 
@@ -372,23 +407,35 @@
   <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
   <div class="progress-label" id="progressLabel">0 de 3 seções preenchidas</div>
 
-  <form id="gcForm" novalidate>
+  <form id="mainForm" novalidate>
 
-    <!-- DADOS DO GRUPO -->
+    <!-- FUNÇÃO -->
     <div class="card">
-      <div class="card-title"><div class="icon">📋</div> Dados do Grupo</div>
-
-      <div class="field">
-        <label>Nome do grupo <span class="req">*</span></label>
-        <input type="text" id="nomeGrupo" placeholder="Ex: Somos Um — Aldeota Quinta-feira">
-        <div class="error-msg" id="err-nomeGrupo">Por favor, informe o nome do grupo.</div>
+      <div class="card-title"><div class="icon">🎯</div> Qual é a sua função?</div>
+      <div class="funcao-grid">
+        <div class="funcao-card" id="card-lider" onclick="selecionarFuncao('lider')">
+          <div class="funcao-label">Líder de Grupo de Crescimento</div>
+        </div>
+        <div class="funcao-card" id="card-supervisor" onclick="selecionarFuncao('supervisor')">
+          <div class="funcao-label">Supervisor Pastoral</div>
+        </div>
+        <div class="funcao-card" id="card-coord" onclick="selecionarFuncao('coord')">
+          <div class="funcao-label">Coordenador Pastoral</div>
+        </div>
       </div>
+      <div class="error-msg" id="err-funcao">Selecione sua função para continuar.</div>
+    </div>
 
-      <div class="row-2">
-        <div class="field">
-          <label>Ministério <span class="req">*</span></label>
-          <select id="ministerio">
-            <option value="">Selecione...</option>
+    <!-- ══ LÍDER DE GC ══ -->
+    <div id="sec-lider" style="display:none">
+
+      <!-- 1. Dados do grupo primeiro -->
+      <div class="card">
+        <div class="card-title"><div class="icon">📋</div> Dados do Grupo</div>
+        <div class="row-2">
+          <div class="field">
+            <label>Ministério <span class="req">*</span></label>
+            <select id="minGC"><option value="">Selecione...</option>
             <option>A13 Jr — 12 a 14 anos</option>
             <option>A13 School — 15 a 17 anos</option>
             <option>A13 Uni — 18 a 24 anos</option>
@@ -397,143 +444,410 @@
             <option value="Somos Um (Casais)">Somos Um (Casais)</option>
             <option>Somos Um (Rede MC)</option>
             <option>Somos Um (Rede HC)</option>
-            <option>Videira Kids — 8 a 11 anos</option>
-          </select>
-          <div class="error-msg" id="err-ministerio">Selecione um ministério.</div>
+            <option>Videira Kids — 8 a 11 anos</option></select>
+            <div class="error-msg" id="err-minGC">Selecione um ministério.</div>
+          </div>
+          <div class="field">
+            <label>Nome do grupo <span class="req">*</span></label>
+            <input type="text" id="nomeGrupo" placeholder="Ex: Somos Um — Aldeota Quinta">
+            <div class="error-msg" id="err-nomeGrupo">Informe o nome do grupo.</div>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label>Dia da semana <span class="req">*</span></label>
+            <select id="diaSemana"><option value="">Selecione...</option>
+            <option>Segunda-feira</option><option>Terça-feira</option>
+            <option>Quinta-feira</option><option>Sexta-feira</option><option>Sábado</option></select>
+            <div class="error-msg" id="err-diaSemana">Informe o dia.</div>
+          </div>
+          <div class="field">
+            <label>Horário <span class="req">*</span></label>
+            <input type="text" id="horario" placeholder="Ex: 19:30">
+            <div class="error-msg" id="err-horario">Informe o horário.</div>
+          </div>
         </div>
         <div class="field">
-          <label>Dia da semana <span class="req">*</span></label>
-          <select id="diaSemana">
-            <option value="">Selecione...</option>
-            <option>Segunda-feira</option>
-            <option>Terça-feira</option>
-            <option>Quinta-feira</option>
-            <option>Sexta-feira</option>
-            <option>Sábado</option>
-          </select>
-          <div class="error-msg" id="err-diaSemana">Informe o dia da semana.</div>
+          <label>Bairro do GC <span class="req">*</span></label>
+          <input type="text" id="bairroGrupo" placeholder="Bairro onde o GC se reúne">
+          <div class="error-msg" id="err-bairroGrupo">Informe o bairro do GC.</div>
+        </div>
+        <div class="field">
+          <label>Observações <span class="hint">(opcional)</span></label>
+          <textarea id="obsGrupo" placeholder="Informações adicionais sobre o GC..."></textarea>
         </div>
       </div>
 
-      <div class="row-2">
-        <div class="field">
-          <label>Horário de início <span class="req">*</span></label>
-          <input type="text" id="horario" placeholder="Ex: 19:30">
-          <div class="error-msg" id="err-horario">Informe o horário.</div>
+      <!-- 2. Dados pessoais do líder — adapta conforme ministério -->
+      <div class="card">
+        <div class="card-title"><div class="icon">👤</div> Dados Pessoais do Líder</div>
+
+        <!-- Líder único (padrão) -->
+        <div id="sec-lider-unico">
+
+      <div class="pessoa-block">
+        <div class="pessoa-block-header"><span class="pessoa-num">Líder</span></div>
+        <div class="row-2">
+          <div class="field"><label>Nome completo <span class="req">*</span></label>
+            <input type="text" id="l1Nome" placeholder="Nome completo">
+            <div class="error-msg" id="err-l1Nome">Informe o nome.</div></div>
+          <div class="field"><label>WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="l1Whats" class="tel-input">
+            <div class="error-msg" id="err-l1Whats">Informe o WhatsApp.</div></div>
         </div>
-        <div class="field">
-          <label>Bairro / Localidade <span class="req">*</span></label>
-          <input type="text" id="bairro" placeholder="Ex: Aldeota">
-          <div class="error-msg" id="err-bairro">Informe o bairro.</div>
+        <div class="field"><label>E-mail <span class="req">*</span></label>
+          <input type="email" id="l1Email" placeholder="email@exemplo.com">
+          <div class="error-msg" id="err-l1Email">Informe o e-mail.</div></div>
+        <div class="row-2">
+          <div class="field"><label>Data de nascimento <span class="req">*</span></label>
+            <input type="text" id="l1Nasc" class="data-input" placeholder="DD/MM/AAAA">
+            <div class="error-msg" id="err-l1Nasc">Informe a data de nascimento.</div></div>
+          <div class="field"><label>Sexo <span class="req">*</span></label>
+            <select id="l1Sexo"><option value="">Selecione...</option><option>Masculino</option><option>Feminino</option></select>
+            <div class="error-msg" id="err-l1Sexo">Selecione o sexo.</div></div>
+        </div>
+        <div class="field"><label>Estado civil <span class="req">*</span></label>
+          <select id="l1Civil"><option value="">Selecione...</option><option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select>
+          <div class="error-msg" id="err-l1Civil">Selecione o estado civil.</div></div>
+        <div class="row-2">
+          <div class="field"><label>Bairro <span class="req">*</span></label>
+            <input type="text" id="l1Bairro" placeholder="Bairro">
+            <div class="error-msg" id="err-l1Bairro">Informe o bairro.</div></div>
+          <div class="field"><label>Cidade <span class="req">*</span></label>
+            <input type="text" id="l1Cidade" placeholder="Cidade">
+            <div class="error-msg" id="err-l1Cidade">Informe a cidade.</div></div>
+        </div>
+      </div>
+        </div>
+
+        <!-- Dois líderes (Somos Um Casais) -->
+        <div id="sec-lider-duplo" style="display:none">
+
+      <div class="pessoa-block">
+        <div class="pessoa-block-header"><span class="pessoa-num">Líder 1</span></div>
+        <div class="row-2">
+          <div class="field"><label>Nome completo <span class="req">*</span></label>
+            <input type="text" id="l1Nome" placeholder="Nome completo">
+            <div class="error-msg" id="err-l1Nome">Informe o nome.</div></div>
+          <div class="field"><label>WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="l1Whats" class="tel-input">
+            <div class="error-msg" id="err-l1Whats">Informe o WhatsApp.</div></div>
+        </div>
+        <div class="field"><label>E-mail <span class="req">*</span></label>
+          <input type="email" id="l1Email" placeholder="email@exemplo.com">
+          <div class="error-msg" id="err-l1Email">Informe o e-mail.</div></div>
+        <div class="row-2">
+          <div class="field"><label>Data de nascimento <span class="req">*</span></label>
+            <input type="text" id="l1Nasc" class="data-input" placeholder="DD/MM/AAAA">
+            <div class="error-msg" id="err-l1Nasc">Informe a data de nascimento.</div></div>
+          <div class="field"><label>Sexo <span class="req">*</span></label>
+            <select id="l1Sexo"><option value="">Selecione...</option><option>Masculino</option><option>Feminino</option></select>
+            <div class="error-msg" id="err-l1Sexo">Selecione o sexo.</div></div>
+        </div>
+        <div class="field"><label>Estado civil <span class="req">*</span></label>
+          <select id="l1Civil"><option value="">Selecione...</option><option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select>
+          <div class="error-msg" id="err-l1Civil">Selecione o estado civil.</div></div>
+        <div class="row-2">
+          <div class="field"><label>Bairro <span class="req">*</span></label>
+            <input type="text" id="l1Bairro" placeholder="Bairro">
+            <div class="error-msg" id="err-l1Bairro">Informe o bairro.</div></div>
+          <div class="field"><label>Cidade <span class="req">*</span></label>
+            <input type="text" id="l1Cidade" placeholder="Cidade">
+            <div class="error-msg" id="err-l1Cidade">Informe a cidade.</div></div>
+        </div>
+      </div>
+          <div class="section-divider" style="margin-top:8px">Líder 2</div>
+
+      <div class="pessoa-block">
+        <div class="pessoa-block-header"><span class="pessoa-num">Líder 2</span></div>
+        <div class="row-2">
+          <div class="field"><label>Nome completo <span class="req">*</span></label>
+            <input type="text" id="l2Nome" placeholder="Nome completo">
+            <div class="error-msg" id="err-l2Nome">Informe o nome.</div></div>
+          <div class="field"><label>WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="l2Whats" class="tel-input">
+            <div class="error-msg" id="err-l2Whats">Informe o WhatsApp.</div></div>
+        </div>
+        <div class="field"><label>E-mail <span class="req">*</span></label>
+          <input type="email" id="l2Email" placeholder="email@exemplo.com">
+          <div class="error-msg" id="err-l2Email">Informe o e-mail.</div></div>
+        <div class="row-2">
+          <div class="field"><label>Data de nascimento <span class="req">*</span></label>
+            <input type="text" id="l2Nasc" class="data-input" placeholder="DD/MM/AAAA">
+            <div class="error-msg" id="err-l2Nasc">Informe a data de nascimento.</div></div>
+          <div class="field"><label>Sexo <span class="req">*</span></label>
+            <select id="l2Sexo"><option value="">Selecione...</option><option>Masculino</option><option>Feminino</option></select>
+            <div class="error-msg" id="err-l2Sexo">Selecione o sexo.</div></div>
+        </div>
+        <div class="field"><label>Estado civil <span class="req">*</span></label>
+          <select id="l2Civil"><option value="">Selecione...</option><option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select>
+          <div class="error-msg" id="err-l2Civil">Selecione o estado civil.</div></div>
+        <div class="row-2">
+          <div class="field"><label>Bairro <span class="req">*</span></label>
+            <input type="text" id="l2Bairro" placeholder="Bairro">
+            <div class="error-msg" id="err-l2Bairro">Informe o bairro.</div></div>
+          <div class="field"><label>Cidade <span class="req">*</span></label>
+            <input type="text" id="l2Cidade" placeholder="Cidade">
+            <div class="error-msg" id="err-l2Cidade">Informe a cidade.</div></div>
+        </div>
+      </div>
         </div>
       </div>
 
-      <div class="field">
-        <label>Observações do grupo <span class="hint">(opcional)</span></label>
-        <textarea id="obsGrupo" placeholder="Informações adicionais sobre o GC..."></textarea>
+      <!-- 3. Co-líderes -->
+      <div class="card">
+        <div class="card-title"><div class="icon">👥</div> Co-líderes</div>
+        <div class="info-box">Para Somos Um (Casais), os co-líderes são adicionados em pares com todos os dados de cada um.</div>
+        <div id="colidersWrap">
+          <button type="button" class="btn-add-member" id="btnAddColider">
+            <span class="plus">+</span> Adicionar co-líder
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. Supervisor responsável -->
+      <div class="card">
+        <div class="card-title"><div class="icon">🧭</div> Supervisão Pastoral</div>
+        <div class="field">
+          <label>Supervisores Pastorais responsáveis <span class="req">*</span></label>
+          <input type="text" id="supervisorResp" placeholder="Nome(s) do(s) supervisor(es)">
+          <div class="error-msg" id="err-supervisorResp">Informe o supervisor pastoral.</div>
+        </div>
       </div>
     </div>
 
-    <!-- DADOS DO LÍDER -->
-    <div class="card">
-      <div class="card-title"><div class="icon">👤</div> Dados do Líder</div>
+    <!-- ══ SUPERVISOR PASTORAL ══ -->
+    <div id="sec-supervisor" style="display:none">
 
-      <div class="section-divider" id="lider1Label">Líder</div>
-      <div class="row-2">
-        <div class="field">
-          <label>Nome completo <span class="req">*</span></label>
-          <input type="text" id="liderNome" placeholder="Nome do líder">
-          <div class="error-msg" id="err-liderNome">Informe o nome do líder.</div>
-        </div>
-        <div class="field">
-          <label>WhatsApp <span class="req">*</span></label>
-          <input type="tel" id="liderWhats" placeholder="(85) 99999-9999">
-          <div class="error-msg" id="err-liderWhats">Informe o WhatsApp do líder.</div>
-        </div>
-      </div>
-      <div class="field">
-        <label>E-mail <span class="req">*</span></label>
-        <input type="email" id="liderEmail" placeholder="email@exemplo.com">
-        <div class="error-msg" id="err-liderEmail">Informe o e-mail do líder.</div>
-      </div>
-
-      <div id="lider2Block" style="display:none">
-        <div class="section-divider">Líder 2</div>
+      <div class="card">
+        <div class="card-title"><div class="icon">📋</div> Dados da Supervisão</div>
         <div class="row-2">
           <div class="field">
-            <label>Nome completo <span class="req">*</span></label>
-            <input type="text" id="lider2Nome" placeholder="Nome do líder 2">
-            <div class="error-msg" id="err-lider2Nome">Informe o nome do líder 2.</div>
+            <label>Nome da supervisão <span class="req">*</span></label>
+            <input type="text" id="nomeSupervisao" placeholder="Ex: Supervisão Meireles">
+            <div class="error-msg" id="err-nomeSupervisao">Informe o nome da supervisão.</div>
           </div>
           <div class="field">
-            <label>WhatsApp <span class="req">*</span></label>
-            <input type="tel" id="lider2Whats" placeholder="(85) 99999-9999">
-            <div class="error-msg" id="err-lider2Whats">Informe o WhatsApp do líder 2.</div>
+            <label>Ministério <span class="req">*</span></label>
+            <select id="minSup"><option value="">Selecione...</option>
+            <option>A13 Jr — 12 a 14 anos</option>
+            <option>A13 School — 15 a 17 anos</option>
+            <option>A13 Uni — 18 a 24 anos</option>
+            <option>Vert — 25 a 34 anos</option>
+            <option>Inspire — 35+</option>
+            <option value="Somos Um (Casais)">Somos Um (Casais)</option>
+            <option>Somos Um (Rede MC)</option>
+            <option>Somos Um (Rede HC)</option>
+            <option>Videira Kids — 8 a 11 anos</option></select>
+            <div class="error-msg" id="err-minSup">Selecione um ministério.</div>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label>Dia da semana <span class="hint">(opcional)</span></label>
+            <select id="diaSup"><option value="">Selecione...</option>
+            <option>Segunda-feira</option><option>Terça-feira</option>
+            <option>Quinta-feira</option><option>Sexta-feira</option><option>Sábado</option></select>
+          </div>
+          <div class="field">
+            <label>Horário <span class="hint">(opcional)</span></label>
+            <input type="text" id="horarioSup" placeholder="Ex: 19:30">
           </div>
         </div>
         <div class="field">
-          <label>E-mail <span class="req">*</span></label>
-          <input type="email" id="lider2Email" placeholder="email@exemplo.com">
-          <div class="error-msg" id="err-lider2Email">Informe o e-mail do líder 2.</div>
+          <label>Observações <span class="hint">(opcional)</span></label>
+          <textarea id="obsSup" placeholder="Informações adicionais..."></textarea>
         </div>
       </div>
 
-      <div class="field" style="margin-top:16px">
-        <label>Tem co-líder? <span class="req">*</span></label>
-        <select id="temColider">
-          <option value="">Selecione...</option>
-          <option value="nao">Não</option>
-          <option value="sim">Sim</option>
-        </select>
-        <div class="error-msg" id="err-temColider">Selecione uma opção.</div>
-      </div>
+      <div class="card">
+        <div class="card-title"><div class="icon">👤</div> Dados Pessoais dos Supervisores</div>
+        <div class="section-divider">Supervisor 1</div>
 
-      <div id="coliderFields" style="display:none">
-        <div class="section-divider">Co-líder 1</div>
+      <div class="pessoa-block">
+        <div class="pessoa-block-header"><span class="pessoa-num">Supervisor 1</span></div>
         <div class="row-2">
-          <div class="field">
-            <label>Nome</label>
-            <input type="text" id="coliderNome" placeholder="Nome do co-líder 1">
-          </div>
-          <div class="field">
-            <label>WhatsApp</label>
-            <input type="tel" id="coliderWhats" placeholder="(85) 99999-9999">
-          </div>
+          <div class="field"><label>Nome completo <span class="req">*</span></label>
+            <input type="text" id="s1Nome" placeholder="Nome completo">
+            <div class="error-msg" id="err-s1Nome">Informe o nome.</div></div>
+          <div class="field"><label>WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="s1Whats" class="tel-input">
+            <div class="error-msg" id="err-s1Whats">Informe o WhatsApp.</div></div>
         </div>
-        <div class="section-divider">Co-líder 2</div>
+        <div class="field"><label>E-mail <span class="req">*</span></label>
+          <input type="email" id="s1Email" placeholder="email@exemplo.com">
+          <div class="error-msg" id="err-s1Email">Informe o e-mail.</div></div>
         <div class="row-2">
-          <div class="field">
-            <label>Nome <span class="hint">(se houver)</span></label>
-            <input type="text" id="colider2Nome" placeholder="Nome do co-líder 2">
-          </div>
-          <div class="field">
-            <label>WhatsApp</label>
-            <input type="tel" id="colider2Whats" placeholder="(85) 99999-9999">
-          </div>
+          <div class="field"><label>Data de nascimento <span class="req">*</span></label>
+            <input type="text" id="s1Nasc" class="data-input" placeholder="DD/MM/AAAA">
+            <div class="error-msg" id="err-s1Nasc">Informe a data de nascimento.</div></div>
+          <div class="field"><label>Sexo <span class="req">*</span></label>
+            <select id="s1Sexo"><option value="">Selecione...</option><option>Masculino</option><option>Feminino</option></select>
+            <div class="error-msg" id="err-s1Sexo">Selecione o sexo.</div></div>
+        </div>
+        <div class="field"><label>Estado civil <span class="req">*</span></label>
+          <select id="s1Civil"><option value="">Selecione...</option><option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select>
+          <div class="error-msg" id="err-s1Civil">Selecione o estado civil.</div></div>
+        <div class="row-2">
+          <div class="field"><label>Bairro <span class="req">*</span></label>
+            <input type="text" id="s1Bairro" placeholder="Bairro">
+            <div class="error-msg" id="err-s1Bairro">Informe o bairro.</div></div>
+          <div class="field"><label>Cidade <span class="req">*</span></label>
+            <input type="text" id="s1Cidade" placeholder="Cidade">
+            <div class="error-msg" id="err-s1Cidade">Informe a cidade.</div></div>
         </div>
       </div>
+        <div class="section-divider" style="margin-top:8px">Supervisor 2</div>
 
-      <div class="field" style="margin-top:16px">
-        <label>Supervisores Pastorais responsáveis <span class="req">*</span></label>
-        <input type="text" id="supervisor" placeholder="Nome(s) do(s) supervisor(es)">
-        <div class="error-msg" id="err-supervisor">Informe o supervisor pastoral responsável.</div>
+      <div class="pessoa-block">
+        <div class="pessoa-block-header"><span class="pessoa-num">Supervisor 2</span></div>
+        <div class="row-2">
+          <div class="field"><label>Nome completo <span class="req">*</span></label>
+            <input type="text" id="s2Nome" placeholder="Nome completo">
+            <div class="error-msg" id="err-s2Nome">Informe o nome.</div></div>
+          <div class="field"><label>WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="s2Whats" class="tel-input">
+            <div class="error-msg" id="err-s2Whats">Informe o WhatsApp.</div></div>
+        </div>
+        <div class="field"><label>E-mail <span class="req">*</span></label>
+          <input type="email" id="s2Email" placeholder="email@exemplo.com">
+          <div class="error-msg" id="err-s2Email">Informe o e-mail.</div></div>
+        <div class="row-2">
+          <div class="field"><label>Data de nascimento <span class="req">*</span></label>
+            <input type="text" id="s2Nasc" class="data-input" placeholder="DD/MM/AAAA">
+            <div class="error-msg" id="err-s2Nasc">Informe a data de nascimento.</div></div>
+          <div class="field"><label>Sexo <span class="req">*</span></label>
+            <select id="s2Sexo"><option value="">Selecione...</option><option>Masculino</option><option>Feminino</option></select>
+            <div class="error-msg" id="err-s2Sexo">Selecione o sexo.</div></div>
+        </div>
+        <div class="field"><label>Estado civil <span class="req">*</span></label>
+          <select id="s2Civil"><option value="">Selecione...</option><option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select>
+          <div class="error-msg" id="err-s2Civil">Selecione o estado civil.</div></div>
+        <div class="row-2">
+          <div class="field"><label>Bairro <span class="req">*</span></label>
+            <input type="text" id="s2Bairro" placeholder="Bairro">
+            <div class="error-msg" id="err-s2Bairro">Informe o bairro.</div></div>
+          <div class="field"><label>Cidade <span class="req">*</span></label>
+            <input type="text" id="s2Cidade" placeholder="Cidade">
+            <div class="error-msg" id="err-s2Cidade">Informe a cidade.</div></div>
+        </div>
+      </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <div class="icon">👥</div> GCs desta Supervisão
+          <span class="member-count-badge" id="gcCountBadge">0 GCs</span>
+        </div>
+        <div class="info-box">Liste os GCs desta supervisão. Quando o ministério for Somos Um (Casais), serão solicitados Líder 1 e Líder 2.</div>
+        <div id="gcList"></div>
+        <button type="button" class="btn-add-member" id="btnAddGC">
+          <span class="plus">+</span> Adicionar GC
+        </button>
       </div>
     </div>
 
-    <!-- MEMBROS -->
-    <div class="card">
-      <div class="card-title">
-        <div class="icon">👥</div>
-        Membros do GC
-        <span class="member-count-badge" id="memberCountBadge">0 membros</span>
+    <!-- ══ COORDENADOR PASTORAL ══ -->
+    <div id="sec-coord" style="display:none">
+
+      <div class="card">
+        <div class="card-title"><div class="icon">📋</div> Dados da Coordenação</div>
+        <div class="field">
+          <label>Nome da coordenação <span class="req">*</span></label>
+          <input type="text" id="nomeCoord" placeholder="Ex: Coordenação Sul">
+          <div class="error-msg" id="err-nomeCoord">Informe o nome da coordenação.</div>
+        </div>
+        <div class="field">
+          <label>Observações <span class="hint">(opcional)</span></label>
+          <textarea id="obsCoord" placeholder="Informações adicionais..."></textarea>
+        </div>
       </div>
-      <div class="info-box">
-        Adicione todos os membros do grupo. O líder <strong>não</strong> precisa ser listado aqui. O formulário avisará se um contato do líder for usado em um membro.
+
+      <div class="card">
+        <div class="card-title"><div class="icon">👤</div> Dados Pessoais dos Coordenadores</div>
+        <div class="section-divider">Coordenador 1</div>
+
+      <div class="pessoa-block">
+        <div class="pessoa-block-header"><span class="pessoa-num">Coordenador 1</span></div>
+        <div class="row-2">
+          <div class="field"><label>Nome completo <span class="req">*</span></label>
+            <input type="text" id="c1Nome" placeholder="Nome completo">
+            <div class="error-msg" id="err-c1Nome">Informe o nome.</div></div>
+          <div class="field"><label>WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="c1Whats" class="tel-input">
+            <div class="error-msg" id="err-c1Whats">Informe o WhatsApp.</div></div>
+        </div>
+        <div class="field"><label>E-mail <span class="req">*</span></label>
+          <input type="email" id="c1Email" placeholder="email@exemplo.com">
+          <div class="error-msg" id="err-c1Email">Informe o e-mail.</div></div>
+        <div class="row-2">
+          <div class="field"><label>Data de nascimento <span class="req">*</span></label>
+            <input type="text" id="c1Nasc" class="data-input" placeholder="DD/MM/AAAA">
+            <div class="error-msg" id="err-c1Nasc">Informe a data de nascimento.</div></div>
+          <div class="field"><label>Sexo <span class="req">*</span></label>
+            <select id="c1Sexo"><option value="">Selecione...</option><option>Masculino</option><option>Feminino</option></select>
+            <div class="error-msg" id="err-c1Sexo">Selecione o sexo.</div></div>
+        </div>
+        <div class="field"><label>Estado civil <span class="req">*</span></label>
+          <select id="c1Civil"><option value="">Selecione...</option><option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select>
+          <div class="error-msg" id="err-c1Civil">Selecione o estado civil.</div></div>
+        <div class="row-2">
+          <div class="field"><label>Bairro <span class="req">*</span></label>
+            <input type="text" id="c1Bairro" placeholder="Bairro">
+            <div class="error-msg" id="err-c1Bairro">Informe o bairro.</div></div>
+          <div class="field"><label>Cidade <span class="req">*</span></label>
+            <input type="text" id="c1Cidade" placeholder="Cidade">
+            <div class="error-msg" id="err-c1Cidade">Informe a cidade.</div></div>
+        </div>
       </div>
-      <div class="member-list" id="memberList"></div>
-      <button type="button" class="btn-add-member" id="btnAddMember">
-        <span class="plus">+</span> Adicionar membro
-      </button>
+        <div class="section-divider" style="margin-top:8px">Coordenador 2</div>
+
+      <div class="pessoa-block">
+        <div class="pessoa-block-header"><span class="pessoa-num">Coordenador 2</span></div>
+        <div class="row-2">
+          <div class="field"><label>Nome completo <span class="req">*</span></label>
+            <input type="text" id="c2Nome" placeholder="Nome completo">
+            <div class="error-msg" id="err-c2Nome">Informe o nome.</div></div>
+          <div class="field"><label>WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="c2Whats" class="tel-input">
+            <div class="error-msg" id="err-c2Whats">Informe o WhatsApp.</div></div>
+        </div>
+        <div class="field"><label>E-mail <span class="req">*</span></label>
+          <input type="email" id="c2Email" placeholder="email@exemplo.com">
+          <div class="error-msg" id="err-c2Email">Informe o e-mail.</div></div>
+        <div class="row-2">
+          <div class="field"><label>Data de nascimento <span class="req">*</span></label>
+            <input type="text" id="c2Nasc" class="data-input" placeholder="DD/MM/AAAA">
+            <div class="error-msg" id="err-c2Nasc">Informe a data de nascimento.</div></div>
+          <div class="field"><label>Sexo <span class="req">*</span></label>
+            <select id="c2Sexo"><option value="">Selecione...</option><option>Masculino</option><option>Feminino</option></select>
+            <div class="error-msg" id="err-c2Sexo">Selecione o sexo.</div></div>
+        </div>
+        <div class="field"><label>Estado civil <span class="req">*</span></label>
+          <select id="c2Civil"><option value="">Selecione...</option><option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select>
+          <div class="error-msg" id="err-c2Civil">Selecione o estado civil.</div></div>
+        <div class="row-2">
+          <div class="field"><label>Bairro <span class="req">*</span></label>
+            <input type="text" id="c2Bairro" placeholder="Bairro">
+            <div class="error-msg" id="err-c2Bairro">Informe o bairro.</div></div>
+          <div class="field"><label>Cidade <span class="req">*</span></label>
+            <input type="text" id="c2Cidade" placeholder="Cidade">
+            <div class="error-msg" id="err-c2Cidade">Informe a cidade.</div></div>
+        </div>
+      </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <div class="icon">👥</div> Supervisões desta Coordenação
+          <span class="member-count-badge" id="supCountBadge">0 supervisões</span>
+        </div>
+        <div class="info-box">Liste as supervisões desta coordenação com seus respectivos supervisores e ministério.</div>
+        <div id="supList"></div>
+        <button type="button" class="btn-add-member" id="btnAddSup">
+          <span class="plus">+</span> Adicionar supervisão
+        </button>
+      </div>
     </div>
 
     <div class="footer-actions">
@@ -544,376 +858,443 @@
 
   <div class="success-screen" id="successScreen">
     <div class="success-icon">✓</div>
-    <h2>GC cadastrado com sucesso!</h2>
-    <p>Os dados foram enviados para a planilha com sucesso!</p>
+    <h2>Cadastro enviado com sucesso!</h2>
+    <p>Os dados foram recebidos pela equipe da CCVideira Sul.</p>
     <br>
-    <button class="btn-secondary" id="btnNovoGC" style="margin-top:8px">+ Cadastrar outro GC</button>
+    <button class="btn-secondary" id="btnNovo" style="margin-top:8px">+ Fazer novo cadastro</button>
   </div>
 </div>
 
 <script>
 
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkPSaz_WYl-w4PuXFQTtmQwA5D_OgQ_hkvW7kQblU359FvmOK01qFSkft7-DL6_EqVbA/exec';
+var funcaoAtual = '';
+var coliderCount = 0;
+var gcCount = 0;
+var supCount = 0;
 
-var memberCount = 0;
-var isSomosUm = false;
-
-var PASSOS = {
-  '1 — DECIDIR':  'Conhecendo a igreja, mas ainda não aceitou a Jesus como Senhor e Salvador.',
-  '2 — CONECTAR': 'Novo decidido, mas ainda não é membro de um GC.',
-  '3 — CONHECER': 'Membro do GC, mas ainda não iniciou a trilha Fundamentos.',
-  '4 — SERVIR':   'Faz parte da igreja, mas ainda não é voluntário.',
-  '5 — LIDERAR':  'Fez Fundamentos, é voluntário e está em GC, mas ainda não fez o PFL.'
-};
-
-// ── Helpers ────────────────────────────────────────────────────
-function val(id) {
-  var el = document.getElementById(id);
-  return el ? el.value.trim() : '';
+// ── Helpers ─────────────────────────────────────────────────────
+function val(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+function radioVal(name){ var e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:''; }
+function show(id,v){ var e=document.getElementById(id); if(e) e.style.display=v?'block':'none'; }
+function showErr(id,s,msg){
+  var e=document.getElementById(id);
+  if(e){e.style.display=s?'block':'none'; if(msg)e.textContent=msg;}
+  var inp=document.getElementById(id.replace('err-',''));
+  if(inp) inp.classList.toggle('error',s);
 }
 
-function showErr(id, show) {
-  var el = document.getElementById(id);
-  if (el) el.style.display = show ? 'block' : 'none';
-  var input = document.getElementById(id.replace('err-', ''));
-  if (input) input.classList.toggle('error', show);
+// ── Tel / Data ──────────────────────────────────────────────────
+function formatarTel(inp){
+  var d=inp.value.replace(/\D/g,'').slice(0,11),f=d;
+  if(d.length>2) f='('+d.slice(0,2)+') '+d.slice(2);
+  if(d.length>7) f='('+d.slice(0,2)+') '+d.slice(2,7)+'-'+d.slice(7);
+  inp.value=f;
 }
-
-// ── Ministério ─────────────────────────────────────────────────
-function onMinisterioChange() {
-  var v = document.getElementById('ministerio').value;
-  isSomosUm = (v === 'Somos Um (Casais)');
-  document.getElementById('lider2Block').style.display = isSomosUm ? 'block' : 'none';
-  document.getElementById('lider1Label').textContent = isSomosUm ? 'Líder 1' : 'Líder';
-  updateProgress();
+function telOk(inp){ return inp.value.replace(/\D/g,'').length===11; }
+function maskTel(el){ if(!el)return; el.addEventListener('input',function(){formatarTel(this);}); el.setAttribute('maxlength','15'); el.setAttribute('placeholder','(85) 99999-9999'); }
+function formatarData(inp){
+  var d=inp.value.replace(/\D/g,'').slice(0,8);
+  if(d.length>2) d=d.slice(0,2)+'/'+d.slice(2);
+  if(d.length>5) d=d.slice(0,5)+'/'+d.slice(5);
+  inp.value=d;
 }
-
-// ── Co-líder ───────────────────────────────────────────────────
-function toggleColider(v) {
-  document.getElementById('coliderFields').style.display = v === 'sim' ? 'block' : 'none';
+function dataOk(s){
+  var p=s.split('/');
+  if(p.length!==3||p[2].length!==4)return false;
+  var d=+p[0],m=+p[1],y=+p[2];
+  return m>=1&&m<=12&&d>=1&&d<=31&&y>=1900&&y<=new Date().getFullYear();
 }
-
-// ── Contatos do líder ──────────────────────────────────────────
-function getContatosLider() {
-  var set = new Set();
-  ['liderWhats','liderEmail','lider2Whats','lider2Email','coliderWhats','colider2Whats'].forEach(function(id) {
-    var v = val(id).toLowerCase().replace(/\s/g,'');
-    if (v) set.add(v);
-  });
-  return set;
-}
-
-function validarContatosMembros() {
-  var contatos = getContatosLider();
-  document.querySelectorAll('.member-item').forEach(function(item) {
-    var wv = (item.querySelector('.m-whats') || {value:''}).value.trim().toLowerCase().replace(/\s/g,'');
-    var ev = (item.querySelector('.m-email') || {value:''}).value.trim().toLowerCase();
-    var flagged = (wv && contatos.has(wv)) || (ev && contatos.has(ev));
-    var warn = item.querySelector('.warn-dup');
-    if (warn) warn.classList.toggle('visible', flagged);
+function applyMasks(root){
+  (root||document).querySelectorAll('.tel-input').forEach(maskTel);
+  (root||document).querySelectorAll('.data-input').forEach(function(el){
+    el.addEventListener('input',function(){formatarData(this);});
+    el.setAttribute('maxlength','10');
   });
 }
 
-// ── Membros ────────────────────────────────────────────────────
-function buildPassosLegend() {
-  return '<div class="passos-legend">' +
-    '<div class="passo-leg"><span class="passo-num">1</span><span><strong>DECIDIR</strong> — Conhecendo a igreja, mas ainda não aceitou a Jesus como Senhor e Salvador.</span></div>' +
-    '<div class="passo-leg"><span class="passo-num">2</span><span><strong>CONECTAR</strong> — Novo decidido, mas ainda não é membro de um GC.</span></div>' +
-    '<div class="passo-leg"><span class="passo-num">3</span><span><strong>CONHECER</strong> — Membro do GC, mas ainda não iniciou a trilha Fundamentos.</span></div>' +
-    '<div class="passo-leg"><span class="passo-num">4</span><span><strong>SERVIR</strong> — Faz parte da igreja, mas ainda não é voluntário.</span></div>' +
-    '<div class="passo-leg"><span class="passo-num">5</span><span><strong>LIDERAR</strong> — Fez Fundamentos, é voluntário e está em GC, mas ainda não fez o PFL.</span></div>' +
-  '</div>';
-}
-
-function addMember() {
-  memberCount++;
-  var n = memberCount;
-  var div = document.createElement('div');
-  div.className = 'member-item';
-  div.id = 'member-' + n;
-  div.innerHTML =
-    '<div class="member-item-header">' +
-      '<span class="member-number">Membro #' + n + '</span>' +
-      '<button type="button" class="btn-remove" data-id="' + n + '" title="Remover">\u00d7</button>' +
-    '</div>' +
-    '<div class="row-2">' +
-      '<div class="field">' +
-        '<label>Nome completo <span class="req">*</span></label>' +
-        '<input type="text" class="m-nome" placeholder="Nome completo">' +
-      '</div>' +
-      '<div class="field">' +
-        '<label>WhatsApp</label>' +
-        '<input type="tel" class="m-whats" placeholder="(85) 99999-9999">' +
-      '</div>' +
-    '</div>' +
-    '<div class="field">' +
-      '<label>E-mail <span class="hint">(opcional)</span></label>' +
-      '<input type="email" class="m-email" placeholder="email@exemplo.com">' +
-    '</div>' +
-    '<div class="warn-box warn-dup">\u26a0 Este WhatsApp ou e-mail j\u00e1 est\u00e1 cadastrado como l\u00edder. Verifique se n\u00e3o \u00e9 um cadastro duplicado.</div>' +
-    '<div class="field">' +
-      '<label>Pr\u00f3ximo passo</label>' +
-      buildPassosLegend() +
-      '<select class="m-passo">' +
-        '<option value="">N\u00e3o informado</option>' +
-        '<option>1 \u2014 DECIDIR</option>' +
-        '<option>2 \u2014 CONECTAR</option>' +
-        '<option>3 \u2014 CONHECER</option>' +
-        '<option>4 \u2014 SERVIR</option>' +
-        '<option>5 \u2014 LIDERAR</option>' +
-      '</select>' +
-    '</div>';
-  document.getElementById('memberList').appendChild(div);
-  // Aplicar máscara no campo de WhatsApp do membro recém-criado
-  var whatsInput = div.querySelector('.m-whats');
-  if (whatsInput) {
-    whatsInput.addEventListener('input', function() { formatarTelefone(this); });
-    whatsInput.setAttribute('maxlength', '15');
-  }
-  updateMemberCount();
-  updateProgress();
-}
-
-function removeMember(id) {
-  var el = document.getElementById('member-' + id);
-  if (el) { el.remove(); updateMemberCount(); updateProgress(); }
-}
-
-function updateMemberCount() {
-  var n = document.querySelectorAll('.member-item').length;
-  document.getElementById('memberCountBadge').textContent = n + (n === 1 ? ' membro' : ' membros');
-}
-
-// ── Progresso ──────────────────────────────────────────────────
-function updateProgress() {
-  var s1 = val('nomeGrupo') && val('ministerio');
-  var s2 = val('liderNome') && val('liderWhats') && val('supervisor');
-  var s3 = document.querySelectorAll('.member-item').length > 0;
-  var done = (s1 ? 1 : 0) + (s2 ? 1 : 0) + (s3 ? 1 : 0);
-  document.getElementById('progressFill').style.width = (done / 3 * 100) + '%';
-  document.getElementById('progressLabel').textContent = done + ' de 3 seções preenchidas';
-}
-
-// ── Validação ──────────────────────────────────────────────────
-function validate() {
-  var ok = true;
-  // Campos de texto obrigatórios
-  ['nomeGrupo','ministerio','diaSemana','horario','bairro','liderNome','liderWhats','liderEmail','temColider','supervisor'].forEach(function(id) {
-    var empty = !val(id);
-    showErr('err-' + id, empty);
-    if (empty) ok = false;
+// ── Pessoa: validar bloco de campos ────────────────────────────
+function validarPessoa(prefix, required){
+  var ok=true;
+  if(!required) return true;
+  ['Nome','Whats','Email','Nasc','Bairro','Cidade'].forEach(function(f){
+    var empty=!val(prefix+f);
+    showErr('err-'+prefix+f, empty);
+    if(empty) ok=false;
   });
-
-  // Validar formato do WhatsApp do líder 1
-  var lw = document.getElementById('liderWhats');
-  if (lw && val('liderWhats') && !validarTelefone(lw)) {
-    showErr('err-liderWhats', true);
-    document.getElementById('err-liderWhats').textContent = 'Informe um número válido com DDD (11 dígitos).';
-    ok = false;
-  } else if (lw && val('liderWhats')) {
-    document.getElementById('err-liderWhats').textContent = 'Informe o WhatsApp do líder.';
-  }
-
-  if (isSomosUm) {
-    ['lider2Nome','lider2Whats','lider2Email'].forEach(function(id) {
-      var empty = !val(id);
-      showErr('err-' + id, empty);
-      if (empty) ok = false;
-    });
-    // Validar formato do WhatsApp do líder 2
-    var lw2 = document.getElementById('lider2Whats');
-    if (lw2 && val('lider2Whats') && !validarTelefone(lw2)) {
-      showErr('err-lider2Whats', true);
-      document.getElementById('err-lider2Whats').textContent = 'Informe um número válido com DDD (11 dígitos).';
-      ok = false;
-    }
-  }
-
-  // Validar WhatsApp de co-líderes se preenchidos
-  ['coliderWhats','colider2Whats'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el && el.value.trim() && !validarTelefone(el)) {
-      el.classList.add('error');
-      ok = false;
-    } else if (el) {
-      el.classList.remove('error');
-    }
-  });
-  document.querySelectorAll('.member-item').forEach(function(item) {
-    var n = item.querySelector('.m-nome');
-    if (n) n.classList.toggle('error', !n.value.trim());
-    if (n && !n.value.trim()) ok = false;
-    // Validar WhatsApp do membro se preenchido
-    var w = item.querySelector('.m-whats');
-    if (w && w.value.trim() && !validarTelefone(w)) {
-      w.classList.add('error');
-      ok = false;
-    } else if (w && w.value.trim()) {
-      w.classList.remove('error');
-    }
-  });
+  var wEl=document.getElementById(prefix+'Whats');
+  if(wEl&&val(prefix+'Whats')&&!telOk(wEl)){showErr('err-'+prefix+'Whats',true,'Número inválido — DDD + 9 dígitos.');ok=false;}
+  var dn=val(prefix+'Nasc');
+  if(dn&&!dataOk(dn)){showErr('err-'+prefix+'Nasc',true,'Data inválida. Use DD/MM/AAAA.');ok=false;}
+  if(!radioVal(prefix+'Sexo')){document.getElementById('err-'+prefix+'Sexo').style.display='block';ok=false;}
+  else document.getElementById('err-'+prefix+'Sexo').style.display='none';
+  if(!radioVal(prefix+'Civil')){document.getElementById('err-'+prefix+'Civil').style.display='block';ok=false;}
+  else document.getElementById('err-'+prefix+'Civil').style.display='none';
   return ok;
 }
 
-// ── Payload ────────────────────────────────────────────────────
-function buildPayload() {
-  var membros = [];
-  document.querySelectorAll('.member-item').forEach(function(item) {
-    membros.push({
-      nome:          (item.querySelector('.m-nome')  || {value:''}).value.trim(),
-      whatsapp:      (item.querySelector('.m-whats') || {value:''}).value.trim(),
-      email:         (item.querySelector('.m-email') || {value:''}).value.trim(),
-      proximo_passo: (item.querySelector('.m-passo') || {value:''}).value.trim()
-    });
-  });
+function coletarPessoa(prefix){
   return {
-    nome_grupo:    val('nomeGrupo'),
-    ministerio:    val('ministerio'),
-    dia_semana:    val('diaSemana'),
-    horario:       val('horario'),
-    bairro:        val('bairro'),
-    obs_grupo:     val('obsGrupo'),
-    lider_nome:    val('liderNome'),
-    lider_whats:   val('liderWhats'),
-    lider_email:   val('liderEmail'),
-    lider2_nome:   val('lider2Nome'),
-    lider2_whats:  val('lider2Whats'),
-    lider2_email:  val('lider2Email'),
-    tem_colider:   val('temColider'),
-    colider_nome:  val('coliderNome'),
-    colider_whats: val('coliderWhats'),
-    colider2_nome: val('colider2Nome'),
-    colider2_whats:val('colider2Whats'),
-    supervisor:    val('supervisor'),
-    membros:       membros
+    nome:        val(prefix+'Nome'),
+    whatsapp:    val(prefix+'Whats'),
+    email:       val(prefix+'Email'),
+    nascimento:  val(prefix+'Nasc'),
+    sexo:        radioVal(prefix+'Sexo'),
+    estado_civil:radioVal(prefix+'Civil'),
+    bairro:      val(prefix+'Bairro'),
+    cidade:      val(prefix+'Cidade')
   };
 }
 
-// ── Submit ─────────────────────────────────────────────────────
-function mostrarSucesso() {
-  document.getElementById('gcForm').style.display = 'none';
-  document.getElementById('successScreen').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function novoGC() {
-  document.getElementById('gcForm').reset();
-  document.getElementById('memberList').innerHTML = '';
-  memberCount = 0;
-  isSomosUm = false;
-  updateMemberCount();
+// ── Ministério GC (líder) → Líder 1/2 ─────────────────────────
+function onMinGCChange(){
+  var casais = val('minGC')==='Somos Um (Casais)';
+  show('sec-lider-unico', !casais);
+  show('sec-lider-duplo',  casais);
+  // Co-líderes: limpar e recriar botão
+  resetColiders();
   updateProgress();
-  document.getElementById('coliderFields').style.display = 'none';
-  document.getElementById('lider2Block').style.display = 'none';
-  document.getElementById('gcForm').style.display = 'block';
-  document.getElementById('successScreen').style.display = 'none';
-  document.querySelectorAll('.error').forEach(function(el) { el.classList.remove('error'); });
-  document.querySelectorAll('.error-msg').forEach(function(el) { el.style.display = 'none'; });
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function clearForm() {
-  if (window.confirm('Limpar todos os dados preenchidos?')) novoGC();
+// ── Co-líderes dinâmicos ────────────────────────────────────────
+function resetColiders(){
+  coliderCount=0;
+  var w=document.getElementById('colidersWrap');
+  if(!w)return;
+  w.innerHTML='';
+  var btn=document.createElement('button');
+  btn.type='button'; btn.id='btnAddColider';
+  btn.className='btn-add-member';
+  btn.innerHTML='<span class="plus">+</span> Adicionar co-líder';
+  btn.addEventListener('click', addColider);
+  w.appendChild(btn);
 }
 
-// ── Listeners (todos via addEventListener, sem onclick inline) ──
-document.addEventListener('DOMContentLoaded', function() {
+function addColider(){
+  var casais=val('minGC')==='Somos Um (Casais)';
+  var wrap=document.getElementById('colidersWrap');
+  var btn=document.getElementById('btnAddColider');
+  if(casais){
+    var n1=++coliderCount, n2=++coliderCount;
+    var div=document.createElement('div');
+    div.className='gc-item'; div.id='colider-grp-'+n1;
+    div.innerHTML=
+      '<div class="gc-item-header"><span class="gc-num">Co-líderes '+Math.ceil(n1/2)+'</span>'+
+      '<button type="button" class="btn-remove" data-colgrp="'+n1+'" title="Remover">\u00d7</button></div>'+
+      buildPessoaHTML('col'+n1)+
+      '<div class="section-divider" style="margin-top:12px">Co-líder '+n2+'</div>'+
+      buildPessoaHTML('col'+n2);
+    wrap.insertBefore(div,btn);
+  } else {
+    var n=++coliderCount;
+    var div=document.createElement('div');
+    div.className='gc-item'; div.id='colider-grp-'+n;
+    div.innerHTML=
+      '<div class="gc-item-header"><span class="gc-num">Co-líder '+n+'</span>'+
+      '<button type="button" class="btn-remove" data-colgrp="'+n+'" title="Remover">\u00d7</button></div>'+
+      buildPessoaHTML('col'+n);
+    wrap.insertBefore(div,btn);
+  }
+  applyMasks(wrap);
+}
 
-  // Máscaras de telefone nos campos fixos
-  ['liderWhats','lider2Whats','coliderWhats','colider2Whats'].forEach(aplicarMascaraTelefone);
+function buildPessoaHTML(prefix){
+  return '<div class="row-2">'+
+    '<div class="field"><label>Nome completo <span class="req">*</span></label><input type="text" id="'+prefix+'Nome" placeholder="Nome completo"><div class="error-msg" id="err-'+prefix+'Nome">Informe o nome.</div></div>'+
+    '<div class="field"><label>WhatsApp</label><input type="tel" id="'+prefix+'Whats" class="tel-input"><div class="error-msg" id="err-'+prefix+'Whats"></div></div></div>'+
+    '<div class="field"><label>E-mail</label><input type="email" id="'+prefix+'Email" placeholder="email@exemplo.com"></div>'+
+    '<div class="row-2">'+
+    '<div class="field"><label>Data de nascimento</label><input type="text" id="'+prefix+'Nasc" class="data-input" placeholder="DD/MM/AAAA"><div class="error-msg" id="err-'+prefix+'Nasc"></div></div>'+
+    '<div class="field"><label>Sexo</label>'+
+    '<select id="'+prefix+'Sexo"><option value="">Selecione...</option><option>Masculino</option><option>Feminino</option></select>'+
+    '<div class="error-msg" id="err-'+prefix+'Sexo">Selecione o sexo.</div></div></div>'+
+    '<div class="field"><label>Estado civil</label>'+
+    '<select id="'+prefix+'Civil"><option value="">Selecione...</option><option>Solteiro(a)</option><option>Casado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select>'+
+    '<div class="error-msg" id="err-'+prefix+'Civil">Selecione o estado civil.</div></div>'+
+    '<div class="row-2">'+
+    '<div class="field"><label>Bairro</label><input type="text" id="'+prefix+'Bairro" placeholder="Bairro"><div class="error-msg" id="err-'+prefix+'Bairro"></div></div>'+
+    '<div class="field"><label>Cidade</label><input type="text" id="'+prefix+'Cidade" placeholder="Cidade"><div class="error-msg" id="err-'+prefix+'Cidade"></div></div></div>';
+}
 
-  // Botão adicionar membro
-  document.getElementById('btnAddMember').addEventListener('click', addMember);
+// ── Ministério supervisão → GC com líder 1/2 ───────────────────
+function onMinSupChange(){
+  var casais=val('minSup')==='Somos Um (Casais)';
+  // Atualizar todos os GCs existentes — mais simples: resetar lista
+  resetGCs(casais);
+}
 
-  // Remover membro (delegação)
-  document.getElementById('memberList').addEventListener('click', function(e) {
-    var btn = e.target.closest('.btn-remove');
-    if (btn) removeMember(btn.getAttribute('data-id'));
-  });
+function resetGCs(casais){
+  gcCount=0;
+  var list=document.getElementById('gcList'); if(!list)return;
+  list.innerHTML='';
+  updateGCCount();
+}
 
-  // Inputs de contato do líder
-  ['liderWhats','liderEmail','lider2Whats','lider2Email','coliderWhats','colider2Whats'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.addEventListener('input', validarContatosMembros);
-  });
+function addGC(){
+  var casais=val('minSup')==='Somos Um (Casais)';
+  gcCount++;
+  var n=gcCount;
+  var list=document.getElementById('gcList');
+  var div=document.createElement('div');
+  div.className='gc-item'; div.id='gc-'+n;
+  var liderFields = casais
+    ? '<div class="row-2"><div class="field"><label>Líder 1</label><input type="text" class="gc-l1" placeholder="Nome do líder 1"></div>'+
+      '<div class="field"><label>Líder 2</label><input type="text" class="gc-l2" placeholder="Nome do líder 2"></div></div>'
+    : '<div class="field"><label>Líder</label><input type="text" class="gc-lider" placeholder="Nome do líder"></div>';
+  div.innerHTML=
+    '<div class="gc-item-header"><span class="gc-num">GC #'+n+'</span>'+
+    '<button type="button" class="btn-remove" data-gc="'+n+'" title="Remover">\u00d7</button></div>'+
+    '<div class="field"><label>Nome do GC</label><input type="text" class="gc-nome" placeholder="Nome do grupo"></div>'+
+    liderFields;
+  list.appendChild(div);
+  updateGCCount();
+}
 
-  // Inputs de contato dos membros (delegação)
-  document.getElementById('memberList').addEventListener('input', function(e) {
-    if (e.target.classList.contains('m-whats') || e.target.classList.contains('m-email')) {
-      validarContatosMembros();
-    }
-  });
+function removeGC(id){ var e=document.getElementById('gc-'+id); if(e){e.remove();updateGCCount();} }
+function updateGCCount(){ var n=document.querySelectorAll('#gcList .gc-item').length; var b=document.getElementById('gcCountBadge'); if(b) b.textContent=n+(n===1?' GC':' GCs'); }
 
-  // Progresso
-  document.getElementById('gcForm').addEventListener('input', updateProgress);
+// ── Supervisões da coordenação ──────────────────────────────────
+function addSupervisao(){
+  supCount++;
+  var n=supCount;
+  var list=document.getElementById('supList');
+  var div=document.createElement('div');
+  div.className='gc-item'; div.id='sup-'+n;
+  div.innerHTML=
+    '<div class="gc-item-header"><span class="gc-num">Supervisão #'+n+'</span>'+
+    '<button type="button" class="btn-remove" data-sup="'+n+'" title="Remover">\u00d7</button></div>'+
+    '<div class="row-2">'+
+    '<div class="field"><label>Nome da supervisão</label><input type="text" class="sup-nome" placeholder="Nome da supervisão"></div>'+
+    '<div class="field"><label>Ministério</label><select class="sup-min">'+
+    '<option value="">Selecione...</option>'+
+    '<option>A13 Jr — 12 a 14 anos</option><option>A13 School — 15 a 17 anos</option>'+
+    '<option>A13 Uni — 18 a 24 anos</option><option>Vert — 25 a 34 anos</option>'+
+    '<option>Inspire — 35+</option><option>Somos Um (Casais)</option>'+
+    '<option>Somos Um (Rede MC)</option><option>Somos Um (Rede HC)</option>'+
+    '<option>Videira Kids — 8 a 11 anos</option>'+
+    '</select></div></div>'+
+    '<div class="section-divider">Supervisor 1</div>'+
+    '<div class="row-2"><div class="field"><label>Nome</label><input type="text" class="sup-s1nome" placeholder="Nome do supervisor 1"></div>'+
+    '<div class="field"><label>WhatsApp</label><input type="tel" class="sup-s1whats tel-input" placeholder="(85) 99999-9999" maxlength="15"></div></div>'+
+    '<div class="section-divider">Supervisor 2</div>'+
+    '<div class="row-2"><div class="field"><label>Nome <span class="hint">(se houver)</span></label><input type="text" class="sup-s2nome" placeholder="Nome do supervisor 2"></div>'+
+    '<div class="field"><label>WhatsApp</label><input type="tel" class="sup-s2whats tel-input" placeholder="(85) 99999-9999" maxlength="15"></div></div>';
+  list.appendChild(div);
+  div.querySelectorAll('.tel-input').forEach(maskTel);
+  updateSupCount();
+}
 
-  // Ministério
-  document.getElementById('ministerio').addEventListener('change', onMinisterioChange);
+function removeSupervisao(id){ var e=document.getElementById('sup-'+id); if(e){e.remove();updateSupCount();} }
+function updateSupCount(){ var n=document.querySelectorAll('#supList .gc-item').length; var b=document.getElementById('supCountBadge'); if(b) b.textContent=n+(n===1?' supervisão':' supervisões'); }
 
-  // Co-líder
-  document.getElementById('temColider').addEventListener('change', function() {
-    toggleColider(this.value);
-  });
-
-  // Submit
-  document.getElementById('gcForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    if (!validate()) {
-      var first = document.querySelector('.error');
-      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-    var btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = 'Enviando...';
-
-    var payload = buildPayload();
-
-    // Mostra confirmação imediatamente (no-cors não retorna resposta)
-    mostrarSucesso();
-
-    // Envia em segundo plano
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    }).catch(function(err) {
-      console.error('Erro ao enviar para planilha:', err);
-    });
-
-    btn.disabled = false;
-    btn.textContent = '✓ Enviar cadastro';
-  });
-
+// ── Delegação de cliques ────────────────────────────────────────
+document.addEventListener('click',function(e){
+  var btn=e.target.closest('.btn-remove');
+  if(!btn)return;
+  if(btn.dataset.colgrp){ var el=document.getElementById('colider-grp-'+btn.dataset.colgrp); if(el) el.remove(); }
+  if(btn.dataset.gc)  removeGC(btn.dataset.gc);
+  if(btn.dataset.sup) removeSupervisao(btn.dataset.sup);
 });
 
-// ── Formatação e validação de telefone ────────────────────────
-function formatarTelefone(input) {
-  var digits = input.value.replace(/\D/g, '').slice(0, 11);
-  var formatted = digits;
-  if (digits.length > 2)  formatted = '(' + digits.slice(0,2) + ') ' + digits.slice(2);
-  if (digits.length > 7)  formatted = '(' + digits.slice(0,2) + ') ' + digits.slice(2,7) + '-' + digits.slice(7);
-  input.value = formatted;
+// ── Seleção de função ───────────────────────────────────────────
+function selecionarFuncao(f){
+  funcaoAtual=f;
+  document.querySelectorAll('.funcao-card').forEach(function(c){c.classList.remove('selected');});
+  document.getElementById('card-'+f).classList.add('selected');
+  document.getElementById('err-funcao').style.display='none';
+  show('sec-lider',      f==='lider');
+  show('sec-supervisor', f==='supervisor');
+  show('sec-coord',      f==='coord');
+  // reset co-líder ao trocar função
+  if(f==='lider') resetColiders();
+  updateProgress();
 }
 
-function validarTelefone(input) {
-  var digits = input.value.replace(/\D/g, '');
-  return digits.length === 11;
+// ── Progresso ───────────────────────────────────────────────────
+function updateProgress(){
+  var s1=!!funcaoAtual;
+  var s2=false, s3=false;
+  if(funcaoAtual==='lider'){
+    var casais=val('minGC')==='Somos Um (Casais)';
+    s2=casais ? (val('l1Nome')&&val('l2Nome')) : (val('l1Nome')&&val('l1Whats'));
+    s3=!!(val('nomeGrupo')&&val('minGC'));
+  }
+  if(funcaoAtual==='supervisor'){
+    s2=val('s1Nome')&&val('s1Whats');
+    s3=!!val('nomeSupervisao');
+  }
+  if(funcaoAtual==='coord'){
+    s2=val('c1Nome')&&val('c1Whats');
+    s3=!!val('nomeCoord');
+  }
+  var done=(s1?1:0)+(s2?1:0)+(s3?1:0);
+  document.getElementById('progressFill').style.width=(done/3*100)+'%';
+  document.getElementById('progressLabel').textContent=done+' de 3 seções preenchidas';
 }
 
-function aplicarMascaraTelefone(id) {
-  var el = document.getElementById(id);
-  if (!el) return;
-  el.addEventListener('input', function() { formatarTelefone(this); });
-  el.setAttribute('placeholder', '(85) 99999-9999');
-  el.setAttribute('maxlength', '15');
+// ── Validação ───────────────────────────────────────────────────
+function validate(){
+  var ok=true;
+  if(!funcaoAtual){document.getElementById('err-funcao').style.display='block';ok=false;}
+
+  if(funcaoAtual==='lider'){
+    var casais=val('minGC')==='Somos Um (Casais)';
+    ['minGC','nomeGrupo','diaSemana','horario','bairroGrupo'].forEach(function(id){
+      var empty=!val(id); showErr('err-'+id,empty); if(empty) ok=false;
+    });
+    if(!validarPessoa('l1',true)) ok=false;
+    if(casais && !validarPessoa('l2',true)) ok=false;
+  }
+  if(funcaoAtual==='supervisor'){
+    ['nomeSupervisao','minSup'].forEach(function(id){
+      var empty=!val(id); showErr('err-'+id,empty); if(empty) ok=false;
+    });
+    if(!validarPessoa('s1',true)) ok=false;
+    if(!validarPessoa('s2',true)) ok=false;
+  }
+  if(funcaoAtual==='coord'){
+    if(!val('nomeCoord')){showErr('err-nomeCoord',true);ok=false;}
+    if(!validarPessoa('c1',true)) ok=false;
+    if(!validarPessoa('c2',true)) ok=false;
+  }
+  return ok;
 }
 
-// ── Botões sem onclick inline
+function validarPessoa(p, req){
+  if(!req)return true;
+  var ok=true;
+  ['Nome','Whats','Email','Nasc','Bairro','Cidade'].forEach(function(f){
+    var empty=!val(p+f); showErr('err-'+p+f,empty); if(empty)ok=false;
+  });
+  var wEl=document.getElementById(p+'Whats');
+  if(wEl&&val(p+'Whats')&&!telOk(wEl)){showErr('err-'+p+'Whats',true,'DDD + 9 dígitos.');ok=false;}
+  var dn=val(p+'Nasc');
+  if(dn&&!dataOk(dn)){showErr('err-'+p+'Nasc',true,'Use DD/MM/AAAA.');ok=false;}
+  function getV(id,name){var s=document.getElementById(id);if(s&&s.tagName==='SELECT')return s.value;var r=document.querySelector('input[name="'+name+'"]:checked');return r?r.value:'';}
+  var sexoErr=document.getElementById('err-'+p+'Sexo');
+  if(!getV(p+'Sexo',p+'Sexo')){showErr('err-'+p+'Sexo',true);ok=false;}
+  else showErr('err-'+p+'Sexo',false);
+  var civErr=document.getElementById('err-'+p+'Civil');
+  if(!getV(p+'Civil',p+'Civil')){showErr('err-'+p+'Civil',true);ok=false;}
+  else showErr('err-'+p+'Civil',false);
+  return ok;
+}
 
-document.getElementById('btnClear').addEventListener('click', clearForm);
-document.getElementById('btnNovoGC').addEventListener('click', novoGC);
+// ── Payload ─────────────────────────────────────────────────────
+function coletarPessoa(p){
+  function getVal(id, name){
+    var sel=document.getElementById(id); if(sel&&sel.tagName==='SELECT') return sel.value;
+    var r=document.querySelector('input[name="'+name+'"]:checked'); return r?r.value:'';
+  }
+  return{nome:val(p+'Nome'),whatsapp:val(p+'Whats'),email:val(p+'Email'),
+    nascimento:val(p+'Nasc'),sexo:getVal(p+'Sexo',p+'Sexo'),
+    estado_civil:getVal(p+'Civil',p+'Civil'),bairro:val(p+'Bairro'),cidade:val(p+'Cidade')};
+}
+function coletarColiders(){
+  var list=[];
+  document.querySelectorAll('#colidersWrap .gc-item').forEach(function(block){
+    block.querySelectorAll('input[id^="col"]').forEach(function(){});
+    // coletamos por grupo
+  });
+  // Coleta simples por campos col{n}Nome etc
+  var n=1;
+  while(document.getElementById('col'+n+'Nome')!==null){
+    list.push({nome:val('col'+n+'Nome'),whatsapp:val('col'+n+'Whats'),email:val('col'+n+'Email'),
+      nascimento:val('col'+n+'Nasc'),sexo:radioVal('col'+n+'Sexo'),
+      estado_civil:radioVal('col'+n+'Civil'),bairro:val('col'+n+'Bairro'),cidade:val('col'+n+'Cidade')});
+    n++;
+  }
+  return list;
+}
+function coletarGCs(){
+  var list=[];
+  document.querySelectorAll('#gcList .gc-item').forEach(function(item){
+    var l=item.querySelector('.gc-lider'),l1=item.querySelector('.gc-l1'),l2=item.querySelector('.gc-l2');
+    list.push({nome:(item.querySelector('.gc-nome')||{value:''}).value.trim(),
+      lider:l?l.value.trim():'',lider1:l1?l1.value.trim():'',lider2:l2?l2.value.trim():''});
+  });
+  return list;
+}
+function coletarSups(){
+  var list=[];
+  document.querySelectorAll('#supList .gc-item').forEach(function(item){
+    list.push({nome:(item.querySelector('.sup-nome')||{value:''}).value.trim(),
+      ministerio:(item.querySelector('.sup-min')||{value:''}).value.trim(),
+      sup1_nome:(item.querySelector('.sup-s1nome')||{value:''}).value.trim(),
+      sup1_whats:(item.querySelector('.sup-s1whats')||{value:''}).value.trim(),
+      sup2_nome:(item.querySelector('.sup-s2nome')||{value:''}).value.trim(),
+      sup2_whats:(item.querySelector('.sup-s2whats')||{value:''}).value.trim()});
+  });
+  return list;
+}
+function buildPayload(){
+  return{formulario:'lideranca',funcao:funcaoAtual,
+    // lider
+    ministerio_gc:val('minGC'),nome_grupo:val('nomeGrupo'),dia_semana:val('diaSemana'),
+    horario:val('horario'),bairro_grupo:val('bairroGrupo'),obs_grupo:val('obsGrupo'),
+    supervisor_resp:val('supervisorResp'),
+    lider1:coletarPessoa('l1'),lider2:coletarPessoa('l2'),colideres:coletarColiders(),
+    // supervisor
+    nome_supervisao:val('nomeSupervisao'),ministerio_sup:val('minSup'),
+    dia_sup:val('diaSup'),horario_sup:val('horarioSup'),obs_sup:val('obsSup'),
+    supervisor1:coletarPessoa('s1'),supervisor2:coletarPessoa('s2'),gcs:coletarGCs(),
+    // coord
+    nome_coord:val('nomeCoord'),obs_coord:val('obsCoord'),
+    coord1:coletarPessoa('c1'),coord2:coletarPessoa('c2'),supervisoes:coletarSups()
+  };
+}
+
+// ── Sucesso / reset ─────────────────────────────────────────────
+function mostrarSucesso(){
+  document.getElementById('mainForm').style.display='none';
+  document.getElementById('successScreen').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function novoRegistro(){
+  document.getElementById('mainForm').reset();
+  funcaoAtual='';coliderCount=0;gcCount=0;supCount=0;
+  document.querySelectorAll('.funcao-card').forEach(function(c){c.classList.remove('selected');});
+  ['sec-lider','sec-supervisor','sec-coord'].forEach(function(id){show(id,false);});
+  var w=document.getElementById('colidersWrap');if(w)w.innerHTML='';
+  var gl=document.getElementById('gcList');if(gl)gl.innerHTML='';
+  var sl=document.getElementById('supList');if(sl)sl.innerHTML='';
+  updateGCCount();updateSupCount();updateProgress();
+  document.getElementById('mainForm').style.display='block';
+  document.getElementById('successScreen').style.display='none';
+  document.querySelectorAll('.error').forEach(function(el){el.classList.remove('error');});
+  document.querySelectorAll('.error-msg').forEach(function(el){el.style.display='none';});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function clearForm(){if(confirm('Limpar todos os dados?'))novoRegistro();}
+
+// ── DOMContentLoaded ────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',function(){
+  applyMasks(document);
+  document.getElementById('minGC')&&document.getElementById('minGC').addEventListener('change',onMinGCChange);
+  document.getElementById('minSup')&&document.getElementById('minSup').addEventListener('change',onMinSupChange);
+  document.getElementById('btnAddColider')&&document.getElementById('btnAddColider').addEventListener('click',addColider);
+  document.getElementById('btnAddGC')&&document.getElementById('btnAddGC').addEventListener('click',addGC);
+  document.getElementById('btnAddSup')&&document.getElementById('btnAddSup').addEventListener('click',addSupervisao);
+  document.getElementById('btnClear').addEventListener('click',clearForm);
+  document.getElementById('btnNovo').addEventListener('click',novoRegistro);
+  document.getElementById('mainForm').addEventListener('input',updateProgress);
+  document.getElementById('mainForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    if(!validate()){
+      var first=document.querySelector('.error,.error-msg[style*="block"]');
+      if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+    var btn=document.getElementById('submitBtn');
+    btn.disabled=true;btn.textContent='Enviando...';
+    mostrarSucesso();
+    fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify(buildPayload())
+    }).catch(function(err){console.error(err);});
+    btn.disabled=false;btn.textContent='✓ Enviar cadastro';
+  });
+});
+
 </script>
 </body>
 </html>
