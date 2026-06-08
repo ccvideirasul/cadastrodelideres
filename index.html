@@ -625,7 +625,6 @@
           <div class="field">
             <label>Nome <span class="req">*</span></label>
             <input type="text" id="supervisor2Resp" placeholder="Nome do supervisor 2">
-            <div class="error-msg" id="err-supervisor2Resp">Informe o supervisor 2.</div>
           </div>
           <div class="field">
             <label>WhatsApp</label>
@@ -1186,7 +1185,7 @@ function validate(){
 
   if(funcaoAtual==='lider'){
     var casais=val('minGC')==='Somos Um (Casais)';
-    ['minGC','nomeGrupo','diaSemana','horario','bairroGrupo','supervisorResp','supervisor2Resp'].forEach(function(id){
+    ['minGC','nomeGrupo','diaSemana','horario','bairroGrupo','supervisorResp'].forEach(function(id){
       var empty=!val(id); showErr('err-'+id,empty); if(empty) ok=false;
     });
     if(!validarPessoa('l1',true)) ok=false;
