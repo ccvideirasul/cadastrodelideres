@@ -408,6 +408,9 @@
   <div class="progress-label" id="progressLabel">0 de 3 seções preenchidas</div>
 
   <form id="mainForm" novalidate>
+    <div id="bannerErro" style="display:none;background:#fdf0ee;border:1.5px solid #c0392b;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:#c0392b;font-weight:500;">
+      ⚠ Alguns campos obrigatórios não foram preenchidos corretamente. Por favor, verifique os campos destacados em vermelho antes de continuar.
+    </div>
 
     <!-- FUNÇÃO -->
     <div class="card">
@@ -1330,14 +1333,21 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btnAddSup')&&document.getElementById('btnAddSup').addEventListener('click',addSupervisao);
   document.getElementById('btnClear').addEventListener('click',clearForm);
   document.getElementById('btnNovo').addEventListener('click',novoRegistro);
-  document.getElementById('mainForm').addEventListener('input',updateProgress);
+  document.getElementById('mainForm').addEventListener('input', function(){
+    updateProgress();
+    var banner = document.getElementById('bannerErro');
+    if(banner) banner.style.display = 'none';
+  });
   document.getElementById('mainForm').addEventListener('submit',function(e){
     e.preventDefault();
     if(!validate()){
-      var first=document.querySelector('.error,.error-msg[style*="block"]');
-      if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
+      var banner=document.getElementById('bannerErro');
+      if(banner) banner.style.display='block';
+      window.scrollTo({top:0,behavior:'smooth'});
       return;
     }
+    var banner=document.getElementById('bannerErro');
+    if(banner) banner.style.display='none';
     var btn=document.getElementById('submitBtn');
     btn.disabled=true;btn.textContent='Enviando...';
     mostrarSucesso();
