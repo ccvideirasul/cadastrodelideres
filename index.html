@@ -966,7 +966,8 @@ function applyMasks(root){
 function validarPessoa(prefix, required){
   var ok=true;
   if(!required) return true;
-  ['Nome','Whats','Email','Nasc','Bairro','Cidade'].forEach(function(f){
+  // Email é opcional — não incluído nos campos obrigatórios
+  ['Nome','Whats','Nasc','Bairro','Cidade'].forEach(function(f){
     var empty=!val(prefix+f);
     showErr('err-'+prefix+f, empty);
     if(empty) ok=false;
@@ -975,21 +976,36 @@ function validarPessoa(prefix, required){
   if(wEl&&val(prefix+'Whats')&&!telOk(wEl)){showErr('err-'+prefix+'Whats',true,'Número inválido — DDD + 9 dígitos.');ok=false;}
   var dn=val(prefix+'Nasc');
   if(dn&&!dataOk(dn)){showErr('err-'+prefix+'Nasc',true,'Data inválida. Use DD/MM/AAAA.');ok=false;}
-  if(!radioVal(prefix+'Sexo')){document.getElementById('err-'+prefix+'Sexo').style.display='block';ok=false;}
-  else document.getElementById('err-'+prefix+'Sexo').style.display='none';
-  if(!radioVal(prefix+'Civil')){document.getElementById('err-'+prefix+'Civil').style.display='block';ok=false;}
-  else document.getElementById('err-'+prefix+'Civil').style.display='none';
+  // Sexo e Civil: funciona tanto com select quanto com radio
+  function getV(id,name){
+    var s=document.getElementById(id);
+    if(s&&s.tagName==='SELECT') return s.value;
+    var r=document.querySelector('input[name="'+name+'"]:checked');
+    return r?r.value:'';
+  }
+  var sexoErr=document.getElementById('err-'+prefix+'Sexo');
+  if(!getV(prefix+'Sexo',prefix+'Sexo')){if(sexoErr)sexoErr.style.display='block';ok=false;}
+  else if(sexoErr) sexoErr.style.display='none';
+  var civErr=document.getElementById('err-'+prefix+'Civil');
+  if(!getV(prefix+'Civil',prefix+'Civil')){if(civErr)civErr.style.display='block';ok=false;}
+  else if(civErr) civErr.style.display='none';
   return ok;
 }
 
 function coletarPessoa(prefix){
+  function getV(id,name){
+    var s=document.getElementById(id);
+    if(s&&s.tagName==='SELECT') return s.value;
+    var r=document.querySelector('input[name="'+name+'"]:checked');
+    return r?r.value:'';
+  }
   return {
     nome:        val(prefix+'Nome'),
     whatsapp:    val(prefix+'Whats'),
     email:       val(prefix+'Email'),
     nascimento:  val(prefix+'Nasc'),
-    sexo:        radioVal(prefix+'Sexo'),
-    estado_civil:radioVal(prefix+'Civil'),
+    sexo:        getV(prefix+'Sexo', prefix+'Sexo'),
+    estado_civil:getV(prefix+'Civil', prefix+'Civil'),
     bairro:      val(prefix+'Bairro'),
     cidade:      val(prefix+'Cidade')
   };
